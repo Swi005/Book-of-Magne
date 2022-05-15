@@ -17,6 +17,7 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \DeclareRobustCommand{\comment}[1]{
     {\color{orange}\emph{#1}}
@@ -65,7 +66,7 @@
   \node [left=of c, anchor=north east] {Environment};
 \end{tikzpicture}
 }
-
+{
 \newglossaryentry{DSL}{name={\textbf{Domain Specific Languages}},description={
         A language(i.e not just a library) with abstractions targetet at a specific problem domain.
         \begin{itemize}
@@ -107,16 +108,19 @@
 \newglossaryentry{ref sem}{name={\textbf{Reference Semantics}},description={Type of argument passing where the parameters point to the the address as the argument.}}
 \newglossaryentry{SLE}{name={\textbf{Software Language Engineering}},description={Software Language Engineering is the scientific field that researches language development, and mainteinace of formal descriptios, and tooling of software lanugages}}
 \newglossaryentry{BNF}{name={\textbf{Backus-Naur Form}},description={Formal notation for describing grammars. Used to describe the syntax of a language.}}
+\newglossaryentry{sum of prod}{name={\textbf{Sum of Products}},description={}}
+}
 \makenoidxglossaries
 %For handling code, addapt depending on language
 \lstset{frame=tb,
-  language=Haskell,
+  language=PASCAL,
   aboveskip=3mm,
   belowskip=3mm,
   showstringspaces=false,
   columns=flexible,
   basicstyle={\small\ttfamily},
   numbers=left,
+  backgroundcolor=\color{backcolour}, 
   numberstyle=\tiny\color{gray},
   keywordstyle=\color{blue},
   commentstyle=\color{dkgreen},
@@ -466,7 +470,7 @@ typeCheck vars (Choice test left right) =
             \subsubsection{Type inference}
             Some languages doesnt specify the type of expressions and therefor need to be inferred. See example.
             Some of the expressions in the language below has different types dependent on the input. We therefor need to create a type infererer(real word?).
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
 type ShittyEnviroment = [(String, Expr)]
 
 data Expr = 
@@ -479,7 +483,7 @@ data Expr =
             We decide on some rules for those pesky ambigious expressions. A string plus another string produces a string, an integer and a string also produce a string.
             We also decide that it should be possible to multiply a string with a number. Using thse rules we start to make our type inferer.
             Like previously we start with the literals and vars.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
 inferType _ (IntLit _) = Integer
 inferType _ (StrLit _) = String
 inferType env (Var name) = case lookup name env of
@@ -487,7 +491,7 @@ inferType env (Var name) = case lookup name env of
                         _ -> error "Can't find var"
             \end{lstlisting}
             We then implement Plus and Mult expressions based on the rules.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
 inferType env (Plus left right) = case (inferType env left, inferType env right) of
                                 (Integer, Integer)->Integer
                                 (_,_)->String --If its not two ints its a string!
@@ -710,11 +714,11 @@ end;
             An EBNF consists of terminal symbols and non-terminal production rules which are the restrictions governing how terminal symbols can be combined into a legal sequence. 
             Examples of terminal symbols include alphanumeric characters, punctuation marks, and whitespace characters. These constructions often end up looking like Haskell data structures,
             this should hopefully help you understand them.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=XML]
 <symbol> ::= __expression__
             \end{lstlisting}
             Here is the complete PASCAL like language that only allows assignmentn. in its EBNF form.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=XML]
 (* a simple program syntax in EBNF - Wikipedia *)
 program = 'PROGRAM', white space, identifier, white space, 
             'BEGIN', white space, 
@@ -738,6 +742,70 @@ all characters = ? all visible characters ? ;
 
     \section{Misc.}
         \subsection{Sum of products}
+            You may have encountered the term \gls{sum of prod}, lets quickly run over why we use the terms \textit{sum} and \textit{product} 
+            to describe the data types, and show some examples in both Haskell and Java.
+            \subsubsection*{Haskell}
+            \begin{lstlisting}[language=Haskell]
+data SomeType = A Bool Bool Bool
+                | B Bool
+                | C
+            \end{lstlisting}
+            Here the type SomeType has 3 constructors, A , B and C , where A takes 3 parameters, B takes one, and C zero. 
+            The type of SomeType could be expressed algebraically as
+            \begin{align*}
+                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}{A} + \underbrace{\text{Bool}}{B} + \underbrace{1}{C}
+            \end{align*}
+            The Bool type can take on 2 different values3
+            ( False and True ), so the constructor A
+            can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
+            make from 3 booleans (e.g. A True False False is one example). The constructor B can
+            produce 2 different values, and C can only produce one (not zero!).
+            Thus, the total numbers of values of type SomeType is $8 + 2 + 1 = 11$, as the data type
+            is the sum of the three products we've just described.\\
+            In short, a sum type denotes “one of” its constituent types (if your function takes SomeType
+            as input, it will get either (A b1 b2 b3 ), (B b1) or C for some boolean values b1 . . .), while
+            a product type denotes “all of” its constituent types (e.g. a value constructed with A will
+            have all 3 booleans present.) Another way to express a product type in Haskell is with tuples,
+            e.g.
+            \begin{lstlisting}[language=Haskell]
+type MyTriple = (Bool, Int , Char)
+            \end{lstlisting}
+            \subsubsection*{Java}
+            In Java, we can model the same kind of data types using classes and inheritance. The instance
+            variables of a class determine a “product” type, e.g.
+            \begin{lstlisting}[language=Java]
+class SomeClass {
+    boolean a;
+    boolean b;
+    boolean c;
+}
+            \end{lstlisting}
+        Similarly to the constructor for A in the previous section, there are $2 * 2 * 2 = 8$ different
+values an object of class SomeClass can have. Add another boolean , and you get 16 different
+values. Technically, a variable of type SomeClass can take one 8 + 1 different values, since
+null is also a valid value for all object variables in Java, but sometimes we ignore this fact
+and tell the users of our functions to kindly not pass in null as an argument where we expect
+an actual object.
+Now, to get sum types, we might use class hierarchies in Java:
+
+\begin{lstlisting}[language=Java]
+interface SomeType {}
+
+class A implements SomeType {
+    boolean a;
+    boolean b;
+    boolean c ;
+}
+class B implements SomeType {
+    boolean a;
+}
+class C implements SomeType {
+}
+
+\end{lstlisting}
+    Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
+    just like in the Haskell example above.
+
         \subsection{Property based assertions}
         \subsection{Q\&A}
 
