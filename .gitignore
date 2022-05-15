@@ -1,0 +1,9 @@
+#My latex compiler generates a bunch of extra files. Added a .gitignore so they dont get added. 
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+*.toc
+*.pdf
+*.out

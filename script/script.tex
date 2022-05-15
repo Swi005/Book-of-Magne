@@ -1,0 +1,747 @@
+\documentclass{article}
+
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}%For code do \begin{lstlisting}
+\usepackage{color}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{glossaries}
+\usepackage{fancyhdr}
+\usepackage{cleveref}
+\usepackage{tikz}
+\usetikzlibrary{arrows,arrows.meta,backgrounds,shapes,automata,petri,positioning,calc,chains,decorations.pathmorphing,fit}
+\graphicspath{ {assets/} }
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\DeclareRobustCommand{\comment}[1]{
+    {\color{orange}\emph{#1}}
+}
+
+\newcounter{address}
+\newcommand\StateDiagram[4]{
+\begin{tikzpicture}[>=Stealth, start chain=a, start chain=b, node distance=0,
+  box/.style={draw, on chain=##1, minimum width=15mm, minimum height=6mm},
+  label/.style={thick,minimum width=2cm,fill=blue!20}]
+  \begin{scope}[local bounding box=store]
+  \node [box=a,label] (a) {Address};
+  \node [box=a] {$\cdots$};
+
+  \ifnum#1>99\relax\else
+  \foreach \x in {#1,...,99}
+  {
+    \node [box=a] (addr_\x) {\x};
+  }
+  \fi
+  \node [box=b,below=of a,label] {Value} ;
+  \node [box=b] {$\cdots$} ;
+  \setcounter{address}{#1}
+  \foreach \x in {#3}
+  {
+    \node [box=b] (mem_\theaddress) {\x};
+    \stepcounter{address}
+  }
+  \node [above=of addr_#2,yshift=5mm] (freelabel) { free } ;
+  \draw [->] (freelabel) -- (addr_#2.north) ;
+  \end{scope}
+  \node [left=of a, anchor=north east] {Store};
+  \begin{scope}[start chain=c, start chain=d,shift={($(store.south)-(0,1cm)$)}]
+    \node [box=c,label] (c) {Variable} ;
+    % varname, addr
+    \foreach \x/\y in {#4}
+    {
+      \node [box=c] (var_\x) {\x};
+    }
+    \node [box=d,below=of c,label] {Address} ;
+    \foreach \x/\y in {#4}
+    {
+      \node [box=d] {\y};
+    }
+  \end{scope}
+  \node [left=of c, anchor=north east] {Environment};
+\end{tikzpicture}
+}
+
+\newglossaryentry{DSL}{name={\textbf{Domain Specific Languages}},description={
+        A language(i.e not just a library) with abstractions targetet at a specific problem domain.
+        \begin{itemize}
+            \item \textit{External DSL} - A DSL defined as a seperate programming language.
+            \item \textit{Internal/Embedded DSL} - A DSL defined as a language-like interface to a library.
+        \end{itemize} 
+    }}
+\newglossaryentry{GPL}{name={\textbf{General Purpose Languages}},description={
+    A language suited for a wide variety of problems and situations, but lacks specialized features to deal with specific programs like a DSL.
+}}
+\newglossaryentry{syntax}{name={\textbf{Syntax}},description={Syntax refers to the rules that define the structure of a language. 
+                                                    Syntax in computer programming means the rules that control the structure of the symbols, 
+                                                    punctuation, and words of a programming language.}}
+
+\newglossaryentry{semantics}{name={\textbf{Semantics}},description={The semantics of a program concerns the meaning of the program. i.e what it actually does. 
+                                                            It can take many forms, sometimes we're only interested in the result of the program.
+                                                            Other cases concern the steps taken by the program to reach said output.}}
+\newglossaryentry{interpreter}{name={\textbf{Interpreter}},description={An interpreter is a program that directly executes instructions written in a programming language.}}
+\newglossaryentry{compiler}{name={\textbf{Compiler}},description={A compiler is a program that translates computer code(\textit{the source language}) into another language(\textit{the target language})
+                                                                Compilers usually convert some high level language to some lower level language.}}
+\newglossaryentry{AST}{name={\textbf{Abstract Syntax Tree}},description={An Abstract Syntax Tree(AST) is a tree representation of the syntactic structure of our program. 
+                                                                Can be represented by using trees or terms, and described bt an algebraic data type or regular tree grammar.}}
+\newglossaryentry{meta-programming}{name={\textbf{Meta-Programming}},description={Metaprogramming is a programming technique in which computer programs have the ability to treat other programs as their data. 
+                                        It means that a program can be designed to read, generate, analyze or transform other programs, and even modify itself while running.}}
+\newglossaryentry{BSL}{name={\textbf{Basic Signature Language}},description={Simple language to illustrate signatures}}
+\newglossaryentry{BIPL}{name={\textbf{Basic Imperative Programing Language}},description={BIPL is a trivial language to explain basic imperative programming concepts like mutable vars, assignments, control-flow, loops, and iteration}}
+\newglossaryentry{expression}{name={\textbf{Expression}},description={An expression is a syntactic construct that can be evaluated in order to obtain its value. The resulting value is usually one of the program's types.}}
+\newglossaryentry{wellformed}{name={\textbf{Wellformed}},description={Wellformedness is when a program is following all the rules. smileemoji}}
+\newglossaryentry{store}{name={\textbf{Store}},description={Program memory, byte/value array, grows uppwards.}}
+\newglossaryentry{env}{name={\textbf{Enviroment}},description={Map describing where things are located in the \gls{store}. Kinda like a phonebook}}
+\newglossaryentry{scope}{name={\textbf{Scope}},description={A collection of identifier bindings . i,e what's captured by the eniroment at some point in the code.}}
+\newglossaryentry{param}{name={\textbf{Parameter}},description={A parameter is a localvariable that is initialized with the arguments. Also often contains how those args are to be treated.}}
+\newglossaryentry{local var}{name={\textbf{Local Variable}},description={A local variable is a variable that only exists within a limited scope.}}
+\newglossaryentry{stackframe}{name={\textbf{Stackframe}},description={The stackframe is a snapshot of how the program enviroment looks at a certain point in time. 
+                                                                        The stackframe saves things that could be changed by running the procedure and lets us restore the program
+                                                                        to the previous state without all the changes made by the procedure.}}
+\newglossaryentry{argument}{name={\textbf{Argument}},description={An argument is a value provided to the procedure when it is run. When the procedure is run the parameters of the procedure is initialized with its corresponding argument.}}
+\newglossaryentry{copy sem}{name={\textbf{Copy Semantics}},description={Type of argument passing where the parameters are initialized with the value of the arguments}}
+\newglossaryentry{ref sem}{name={\textbf{Reference Semantics}},description={Type of argument passing where the parameters point to the the address as the argument.}}
+\newglossaryentry{SLE}{name={\textbf{Software Language Engineering}},description={Software Language Engineering is the scientific field that researches language development, and mainteinace of formal descriptios, and tooling of software lanugages}}
+\newglossaryentry{BNF}{name={\textbf{Backus-Naur Form}},description={Formal notation for describing grammars. Used to describe the syntax of a language.}}
+\makenoidxglossaries
+%For handling code, addapt depending on language
+\lstset{frame=tb,
+  language=Haskell,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{\rightmark}
+\lhead{\leftmark}
+\rfoot{\thepage}
+
+\begin{document}
+    \begin{titlepage}
+        \begin{center}
+            \vspace*{1cm}
+    
+            \huge
+            \textbf{Book of Magne}
+    
+            \vspace{0.5cm}
+            \LARGE
+            INF222 Crashcourse 2022
+                
+            \vspace{1.5cm}
+
+            \textbf{Sander Wiig}
+    
+            \vfill
+            
+            \Large
+            INF222 Crashcourse for v2022.\\
+            Some sections addapted from Anya's INF225 notes and course material.
+                
+            \vspace{0.5cm}
+        
+            \includegraphics[width=0.4\textwidth]{UiBlogoMN_gray_m_Eng.png}\\
+            \Large
+            Institute for Informatics\\
+            University of Bergen\\
+            Norway\\
+            \today
+                
+        \end{center}
+    \end{titlepage}
+    \newpage
+    \tableofcontents
+    \newpage
+    \section{Introduction}
+        Hi everyone!\\
+        The goal of this crashcourse is twofold
+        \begin{itemize}
+            \item Learn you the theory
+            \item Give Context for what you've done so far
+        \end{itemize}
+        Important Caveat!\\
+        I'm not a particulary good public speaker. I'm gonna have a few verbal slip-ups and I have a habit of misspeaking,
+        if for some reason I misspeak or say something wrong/confusingly, please give me a sign.
+        I have written a script and have copious amount of notes{*gesture to notes*}, so it shoud hopefully be somewhat under control.\\
+        One last thing before we begin. Both the script and the presentation should be online and accessible at either my github or "mitt uib".\\
+        So todays lecture will be divided into about 7 or 8 parts. \\
+        After each chapter/part we'll do some q\&a. 
+        I'm also thinking that we're going to have somewhat frequent breaks, every 30 min or so.\\
+        With that out of the way, lets begin!
+    \section{The Basics}
+    \subsection{What is a programming language}
+        A programming language 
+        \begin{itemize}
+            \item is an artifical language(i.e made by us humans on purpose)
+            \item used to tell machines what to do
+        \end{itemize}
+        More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer 
+        can follow.
+        This is ofcourse a very general description and it therefore follows that there are many different types of programming languages.
+        IT therefor should come as little surprise that we group languages by features and properties. 
+        \subsubsection{Types of languages}
+        There are many ways of grouping languages. THey can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
+        For now we're going to group them by paradigm, and Generality vs. Specificity.
+        \subsubsection*{Generality vs. Specificity}
+        Languages are usually grouped into two categories when based on their specificity.
+        \begin{itemize}
+            \item DSL
+            \item GPL
+        \end{itemize}
+
+        \Gls{DSL} are as the name sugest languages with a "specific" domain.\\
+        DSL's usually have limited scope and use. Examples are JSON, SQL.     
+        A Domain Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
+        Optimized for a certain problem/domain. 
+        DSLs can be further subdivided into external DSL(seperate programming languages), and internal DLS(language-like interfaec as a library.)
+
+        \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
+        These languages have a wide array
+        of uses and are usually what we think of when we hear the words programming language. Examples of GPLs are Java and Haskell.\\
+        \begin{figure*}[h]
+            \begin{tabular}{|c|c|c}
+                \hline
+                \textbf{Characteristic} &\textbf{DSL vs. GPL}\\
+                \hline
+                \textbf{Domain} & DSLs have a small and well-defined domain\\
+                \hline
+                \textbf{Size} &GPLs are large, DSLs are usually small\\
+                \hline
+                \textbf{Lifespan} &GPLs last for years to decades, DSLs typicaly live for shorter periors.\\
+                \hline
+            \end{tabular}%
+            \caption{Some more comparisons between GPLs and DSLs}
+        \end{figure*}%
+
+        \subsubsection*{Paradigm}
+        We can also classify languages by programming paradigm, some of these are; 
+        \begin{itemize}
+            \item Imperative Languages, i.e C
+            \item Functional Languages, i.e Haskell
+            \item Object-oriented Languages, i.e Java, C\#, C++
+            \item Logic Languages
+        \end{itemize}
+        \comment{Write something about this also}
+        \comment{Write body}
+
+        \subsubsection*{Syntax and Semantics}
+        All programming languages have two parts; the \gls{syntax}, and the \gls{semantics}.\\
+        Syntax is the study of \textit{structure}, just as semantics is the study of \textit{meaning}. Or in other words
+        the syntax tells us \textit{how} to write legal programs, the semantics tells us \textit{what} those programs do. 
+
+        \subsubsection{The Interpreter process}
+            
+            An \gls{interpreter} is a computer program that directly executes instructions written in a programming language.
+            This differs from \glspl{compiler} since they dont have to translate the instructions into machine code to run it. 
+            We use interpreters to define the semantics of our \gls{AST}(AST). They are relativly straight forward to implement since
+            since they for each construct of the AST define the semantics of that construct.\\
+            \newline
+            An interpreter is composed of several phases. \\
+            The first is the lexical analyser. The lexical analyser takes the actual characters that the code is made up of and divdes it up into its lexical tokens(by the tokenizer) using the concrete syntax of the program\footnote{Not covered by this course, so you can safely ignore how this works.}. 
+            It then sends that token stream to the next part of the interpreter. The static analyser.\\
+            The static analyser builds a parse tree out of the tokens and the concrecte syntax. This is then converted into an AST by the abstract syntax rules. This AST is then given to the next part, the Semantic Analyser.
+            The AST is typechecked, checked for wellformedness, names are resolved, types are inffered, and much more discussed in Chapter. The new AST, now with added information, is then given to the evaluator so that it can be evaluated and produce a result.
+            See figure 2. for a visual description of the steps.
+            \begin{figure}[h]
+                \centering
+                \begin{minipage}{.5\textwidth}
+                    \centering
+                    \fbox{\centering
+                    \begin{tikzcd}
+                        \parbox{\textwidth}{}\arrow[d, "\text{character stream}"]\\
+                        \fbox{\parbox{10em}{\centering Lexical Analyzer}}\arrow[d, "\text{token stream}"]\\
+                        \fbox{\parbox{10em}{\centering Syntax Analyzer}}\arrow[d, "\text{syntax tree(AST)}"]\\
+                        \fbox{\parbox{10em}{\centering Semantic Analyzer}}\arrow[d,"\text{syntax tree(Annotated AST)}"]\\
+                        \fbox{\parbox{10em}{\centering Evaluator}}\arrow[d, "\text{result}"]\\
+                        \parbox{\textwidth}{}
+                    \end{tikzcd}}
+                    \caption{Phases of an interpreter}
+                \end{minipage}%
+                \begin{minipage}{.5\textwidth}
+                    \centering
+                    \fbox{\centering
+                    \begin{tikzcd}
+                        \parbox{\textwidth}{}\arrow[d, "\text{character stream}"]\\
+                        \fbox{\parbox{10em}{\centering Lexical Analyzer}}\arrow[d, "\text{token stream}"]\\
+                        \fbox{\parbox{10em}{\centering Syntax Analyzer}}\arrow[d, "\text{syntax tree(AST)}"]\\
+                        \fbox{\parbox{10em}{\centering Semantic Analyzer}}\arrow[d,"\text{syntax tree(Annotated AST)}"]\\
+                        \fbox{\parbox{10em}{\centering Intermediate Code Generator}}\arrow[d, "\text{Intermediate representation}"]\\
+                        \fbox{\parbox{10em}{\centering Machine-Independent Code Optimization}}\arrow[d, "\text{Intermediate representation}"]\\
+                        \fbox{\parbox{10em}{\centering Code Generator}}\arrow[d, "\text{target machine code}"]\\
+                        \fbox{\parbox{10em}{\centering Machine-Dependent Code Optimization}}\arrow[d, "\text{target-machine code}"]\\
+                        \parbox{\textwidth}{}
+                    \end{tikzcd}}
+                    \caption{Phases of a "normal" compiler}
+                \end{minipage}%
+                \caption{Please apprecitate the figures above, they were hard to make}
+            \end{figure}%
+        
+    \subsection{Meta Programming}
+    One of the harder things in the course is \gls{meta-programming}. INF222 is usually the first time you've encountered meta-programming and it can be hard a hard concept to grasp. 
+    Meta-programming is programming \textit{about} programming. More properly meta-programms treat other programms as data. When you see a datastructure like \gls{BSL} or \gls{BIPL} in Haskell it
+    represents a program.
+
+    \subsection{Q\&A}
+
+    \section{ASTs \& Static Analysis}
+        \subsection{AST}
+        An \gls{AST} is the tree representation of the syntactic structure of a program; The abstract syntax
+        describes the structure of the abstract syntax tree - it can be defined using a
+        regular tree grammar, or an algebraic data type or term (in Rascal, ML, Prolog,
+        ...), or an object-oriented inheritance hierarchy of node classes (Java, C++, ...),
+        or as an S-expression (in Lisp languages).
+        he abstract syntax tree can be used as an internal representation in a language processor, 
+        but it is not the only possible representation.\\
+        An abstract syntax can be generated by a grammar in the following way:
+        For every non-terminal type, there is a corresponding abstract syntax type.
+        Each type has one constructor (or node type) corresponding to each production in the grammar, with one child for every symbol in the production that
+        is not a literal token (e.g, punctation, keywords or spaces). If a constructor
+        has only one child, of the same type, it can be removed (e.g., this would be
+        the case for a parenthesis expression). You can do this process entirely based
+        on the information contained in a parse tree. Translating a parse tree into a
+        corresponding abstract syntax tree is called imploding the parse tree.
+        Given an abstract syntax tree, it is possible to reconstruct a parse tree or program text, given the original grammar - though the resulting program may be
+        slightly different in terms of spaces and punctation. This is called unparsing or
+        pretty-printing (particularly if the output is nicely formatted). Parsing, imploding, pretty-printing and then reparsing may not yield the exact same parse tree
+        as the original tree, but it should still implode to the same abstract syntax tree (otherwise there is a bug in your tool chain!).
+
+        Various phases in a language processor may change the abstract syntax
+        tree, or use slightly different versions of the abstract syntax (e.g., after type
+        checking, the nodes for variables include the type of the variable) - it is also
+        possible to decorate or annotate the AST as processing proceeds. 
+        This adds extra information to the nodes in the AST, without impacting the structure of the abstract syntax.
+        Important abstract syntax design considerations are;
+        \begin{itemize}
+            \item Simplicity. Generally, your compiler tools will do a lot of work on AST,
+            and the fewer different cases you have to worry about, the better. For
+            example, if the processing of overloaded functions and operators is basically the same (which it is to some degree in C++), you may want to have
+            only one AST node type to cover both. Having a lot of unnecessary nodes
+            in the tree can be annoying as well, and may make processing slower.
+            \item Good correspondence with the constructs of the language.
+            \item Availability of information during processing. Some information that
+            can be computed from the tree (such as type information) might be encoded directly in the tree (at least at later stages) for easy processing.
+            \item Being end-user friendly or familiar to most programmers isn't an important consideration - the abstract syntax may be radically different from
+            the surface concrete syntax if that helps the compiler writer.
+
+        \end{itemize}
+        \subsection{Static Analysis}
+            \subsubsection{Type Checking}
+            Programming language typing allways fall into one or two categories; static, and dynamic typing. Static typing is when typecheking happens at compiletime, 
+            while dynamic typing happens during runtime. We will focus on static typing. 
+            Statically typed languages typically have these properties.
+            \begin{itemize}
+                \item Variables and data structures must be declared before use.
+                \item Variables and data structure fields can only hold values of the declared type.
+                \item Operations(i.e functions, procedures, methods) and types must be declared.
+                \item Declating the exact types of variables and operations isnt always needed. Some langauges use type inference (Discussed in 3.2.3).
+            \end{itemize}
+
+            What is a typechecker and how does it work? 
+            A typechecker is a meta-program that checks that verifies that the type of some construct(lists, expressions etc.) matches with whats expected of it.
+            For example a typechecker will check that the Plus \gls{expression} takes two Integers. This lets the typechecker discover and report certain errors before the program runs. 
+            To do this a type checker needs to know;
+            \begin{itemize}
+                \item How the language should look.
+                \item The language types.
+                \item Rules for assigning types to the constructs.
+            \end{itemize}
+            \subsubsection*{Lets do a practical example}
+            Here's the abstract syntax for our Simple Typed Language or STL for short.
+            \begin{lstlisting}
+    type VarDecl = [(String, ExprType)]
+
+    data Expr =
+        Var String
+        | I Int
+        | B Bool
+        | BinOp Op Expr Expr
+        | UnOp Op Expr
+        | Choice Expr Expr Expr deriving (Show, Eq)
+                
+    data Op = Plus | Mult | Or | And | Not | Eq deriving (Show, Eq
+            \end{lstlisting}
+            Before we can continue we need to define the types that are allowed. We decide to use two types, Integers, and Booleans.
+            \begin{lstlisting}
+    data ExprType = Integer | Boolean deriving (Show, Eq)
+            \end{lstlisting}
+            Now to the meat of the excercise, the typechecker itself.
+            The usual way to do this in Haskell(and most other languages I've experienced) is to define a series of recursive functions, one for each
+            expression/operand.
+            \begin{lstlisting}
+                typeCheck :: VarDecl->Expr->ExprType
+            \end{lstlisting}
+            I have found it easiest to begin with the cases that form the basic "building blocks" of a language, the literals. It is easy to know the type of Int Literals(Integer obviously), and Bool Literals(Boolean).
+            \begin{lstlisting}
+    typeCheck _ (I _) = Integer
+    typeCheck _ (B _) = Boolean
+            \end{lstlisting} 
+            After these "base" cases we add a case for Vars, this is slightly more complicated since the type is dependent on the list of var decls, 
+            so we need to check the VarDecl list.
+            \begin{lstlisting}
+    typeCheck vars (Var name) = case lookup name vars of
+                Just tp -> tp
+                Nothing -> error $ "No variable could be found named "++name
+            \end{lstlisting}
+            We use a pretty clever Haskell expression called "case". This lets us patternmatch the result of the function call in lookup. 
+            I strongly recommend that you all learn how to use these since they are extremly usefull and I'll be using them liberaly during this example.\\
+            We now move on to the ops. 
+            \begin{lstlisting}
+typeCheck vars (UnOp Not expr) = 
+                case typeCheck vars expr of
+                        Boolean-> Boolean 
+                        _-> error "Argument not boolean"
+
+typeCheck vars (BinOp Plus left right) = 
+                case (typeCheck vars left, typeCheck vars right) of
+                        (Integer, Integer)->Integer
+                        _->error "One of the args is not an Integer"
+
+typeCheck vars (BinOp Mult left right) = 
+                case (typeCheck vars left, typeCheck vars right) of
+                        (Integer, Integer)->Integer
+                        _->error "One of the args is not an Integer"
+
+typeCheck vars (BinOp Or left right) = 
+                case (typeCheck vars left, typeCheck vars right) of
+                        (Boolean, Boolean)->Boolean
+                        _->error "One of the args is not a Boolean"
+
+typeCheck vars (BinOp And left right) = 
+                case (typeCheck vars left, typeCheck vars right) of
+                        (Boolean, Boolean)->Boolean
+                        _->error "One of the args is not a Boolean"
+typeCheck vars (BinOp Eq left right) = Boolean
+            \end{lstlisting}
+            These all more-or-less follow the same pattern \footnote{Maya made me use fancier words, apparently "pretty similar" isn't good enough.}.
+            They all check that the arguments are of the correct type and returns the operand type if so, if not they raise an error.
+            Eq is the odd one out since it returns boolean no matter what since it checks if two expressions are the same.\\
+            The last case is the most complex. Choice tests a boolean condition and returns one of the two expressions depending on the value.
+            The problem is that we dont know which branch will return. We have therefor decided both branches need to be of the same type.
+            \begin{lstlisting}
+typeCheck vars (Choice test left right) = 
+        case typeCheck vars test of
+                Boolean | l == r -> r
+                        | otherwise -> error "Args did not match"
+                _-> error "Test condition is not a Boolean"
+        where 
+        l = typeCheck vars left
+        r = typeCheck vars right
+            \end{lstlisting}
+            Here we begin by checking that the test evals to a boolean type, if so we check that both branches have the same type and return that type.
+            Note that even though an evaluator would only eval one of the two branches, we still typecheck them both.
+            \subsubsection{Wellformedness}
+                For a program to be \gls{wellformed}it needs to satisfy all the constraints(kinda like rules) on it. This means that the program follows all the rules 
+                for it like; 
+                \begin{itemize}
+                    \item The program conforms to the AST.
+                    \item It is typed correctly
+                    \item All procedure calls/declarations are wellformed.
+                    \item and much more.
+                \end{itemize}
+                To check if a program is wellformed we usually implement a so called constraint checker. These are pretty much just unitcases.
+                The recipe for a constrain checker is as follows;
+                \begin{itemize}
+                    \item \textbf{Negative test cases} - Designate one negative test case for each constraint that should be checked. 
+                    Ideally, each such test case should violate only one constraint each.
+                    \item \textbf{Reporting} - Choose an approach to "reporting". The result of constraint violation may be communicated either through
+                                            a boolean value, or as a list of errors, or by throwing an exception.
+                    \item \textbf{Modularity} - Implement each constraint in a separate function, therby allowing modularity and testing.
+                    \item \textbf{Testing} - The constraint violations must be correctly detected for the negative test cases. The positive test case must pass.
+                \end{itemize}
+            \subsubsection{Type inference}
+            Some languages doesnt specify the type of expressions and therefor need to be inferred. See example.
+            Some of the expressions in the language below has different types dependent on the input. We therefor need to create a type infererer(real word?).
+            \begin{lstlisting}
+type ShittyEnviroment = [(String, Expr)]
+
+data Expr = 
+        Var String
+        | IntLit Integer
+        | StrLit Str
+        | Plus Expr Expr
+        | Mult Expr Expr
+            \end{lstlisting}
+            We decide on some rules for those pesky ambigious expressions. A string plus another string produces a string, an integer and a string also produce a string.
+            We also decide that it should be possible to multiply a string with a number. Using thse rules we start to make our type inferer.
+            Like previously we start with the literals and vars.
+            \begin{lstlisting}
+inferType _ (IntLit _) = Integer
+inferType _ (StrLit _) = String
+inferType env (Var name) = case lookup name env of
+                        Just expr -> inferType env expr
+                        _ -> error "Can't find var"
+            \end{lstlisting}
+            We then implement Plus and Mult expressions based on the rules.
+            \begin{lstlisting}
+inferType env (Plus left right) = case (inferType env left, inferType env right) of
+                                (Integer, Integer)->Integer
+                                (_,_)->String --If its not two ints its a string!
+
+ingerType env (Mult left right) = case (inferType env left, inferType env right) of
+                                (String, Integer)-> String
+                                (Integer, Integer)->Integer
+                                _->error "invalid arguments"
+            \end{lstlisting}
+            We decide on the return type by looking at the argument types.
+    \subsection{Q\&A}
+
+    \section{State \& Scoping}
+        \subsection{State}
+        \subsubsection{Store}
+        When running a program we often want to remember intermediary values, or have variables. For us to do this we need some way of storing values.
+        To do this we create a \gls{store}. A store is very simply an array, usually containing either bytes or ValueTypes. 
+        Store is basicly the programs memory(this is actually true in C). To access a value located at $i$ in our store we simple access the value at array index $i$.
+        Worth noting that the store is what we call the program heap and by tradition it grows upwards. This means that new entries are stored at the highest available index in our store.
+        This is because the stack grows upwards and gives us the best possible use of the memory.
+        \subsubsection{Variables and Enviroment}
+        We now have  a place to store stuff, but how do we know where it is in the store. This is where \glspl{env} come into play.\\
+        An enviroment is a map between variables and their location in store. 
+        \subsection{Scoping}
+        A \gls{scope} is a collection of identifier bindings - i.e, what is captured by the enviroment at some point in the code or in time.\\
+        The scope of a declaration includes all the points in the code where that declaration exists(binding). In lexical scopint the
+        scope of a declaration is usually either included in the declaration constructor, or extends to the nearest scoping container(think. Haskells let,where | Java curly-braces).
+        In dynamic scoping, the scope of a declaration is determined at runtime and lasts until the program exits the scoping construct.
+        Bindings can also be shadowed by declaring a new variable with the same name as an in-scope variable. 
+        The results in the outer variables passing out of scope while the inner variable is in-scope.
+        The shadowed variable still exists, but its not accesible until the shadowing variable passes out of scope.\\
+        Scoping is especially important when it comes to procedures and they usually have their own enviroments.\\
+        \textit{Speaking of procedures\dots}
+        \subsection{Q\&A}
+
+    \section{Procedures}
+    A procedure is a programing construct that abstracts away the implementation of an algorithm. Instead of writing 20 lines of code 
+    everytime you want to run an algorithm we simply call a procedure with those 20 lines of code inside it. This increases the readability 
+    of our code and makes it easier to write it. 
+    \subsection{Procedure Declarations}
+    In this course we have a simplified procedure declaration inspired by PASCAL. Our procedure declarations have a list of 
+    parameters(variables that passes in/out of the procedure), another list of local variables(variables that are used within), 
+    and a single statement(the algorithm itself).
+    If we were to translate this abstract syntax into something more concrete then a typical procedure might look something like this.
+    \begin{lstlisting}
+procedure p ( upd a: integer , out b: integer ; obs c : boolean ) ;
+    var x: integer ;
+        y: boolean ;
+        z : boolean ;
+    begin
+        if c then begin b := a ; x := b ; a := x end;
+        y := not c ;
+        c := y or c ;
+    end;
+    \end{lstlisting}
+    The abstract syntax would be something like this in Haskell;
+    \begin{lstlisting}
+-- | Procedure declaration
+data ProcedureDeclaration = Proc
+    String -- Name of the procedure
+    [Parameter] -- Parameter list
+    [VarDecl] -- Local variables
+    Stmt -- Statement part
+    deriving (Show, Eq, Read)
+
+-- | Procedure parameters: mode and variable declaration
+type Parameter = (Mode, VarDecl)
+
+-- | Parameter modes: observe, update, output
+data Mode = Obs | Upd | Out 
+            deriving (Show, Eq, Read)
+
+-- | Variable declaration: variable name and its typ
+type VarDecl = (Var,Type)
+
+    \end{lstlisting}
+    \subsubsection{Parameters \& Local Variables}
+    A \gls{local var} is a variable that only exits in a specific part of the program. We're going to talk about them in the context of procedures.
+    These local variables are declared or defined,  and only used within that procedure.
+    Since the procedure exists in a vaccume, the local variable is allowed to have the same name as variables in other parts of the program. 
+    Since the variable is stored at a different store location any change to the local variable wouldn't change the variable outside.
+
+    \gls{param} are the variables the procedure uses to communicate to the outside world. They are basically variables, but with one key difference;
+    They also specify \textit{how} it communicates witht he outside world, the parameters specify if the variable is a output variable(write), observed only(read), or updatable(is this a word?)(read and write).\\
+    Another way of looking at parameters is that parameters are  local variables that are initialized with the passed arguments at invokation time.
+    \subsubsection{Performing a Procedure}
+        When performing a function we can usually assume that the parameters have allready been added to the enviroment and initialized, and that except those parameters that the we have a clean
+        enviroment to work with.
+        The performing of a procedure consists of the following steps;
+        \begin{enumerate}
+            \item The first is that we need to somehow remember the current enviroment or delete all the local variables when we're done.
+                The best way is to get the current \gls{stackframe}.
+            \item We then add all the local variables.
+            \item We then execute the procedure statements.
+            \item We then reset the enviroment back to how it looked before using the saved stackframe from (1). This ensures that all local variables
+                that shouldn't exist outside the procedure is removed. 
+        \end{enumerate}
+    \subsection{Executing a Procedure Call}
+        We now know how to actually perform a procedure, but for us to even be able to perform a procedure in the first place we need to prepare the enviroment and program for it.
+        There are two main ways of making the program ready to perform a procedure. These are dependent on what type of \gls{argument} passing we are doing.
+    \subsection{Arg Passing}%Difference between args and params
+        Argument passing fall into one of two camps.
+        \subsubsection{Copy Semantics}
+            The first is \gls{copy sem}. 
+            In copy semantics all the arguments are passed to the paramters by copying the value into them.
+            With copy semantics the procedure arguments are first evaluated and then bound to the parameters when they are added.
+            The procedure is then performed, and the results obtained. Those are then copied back to all the arguments that are upd or out.
+            To further explain lets look at a trivial example to understand what happens in store.
+            Say we have a procedure that simply adds 5 to any number.
+\begin{lstlisting}
+procedure add5(obs x : integer, out res : integer)
+begin
+    res = x + 5;
+end;
+
+\end{lstlisting}
+\newpage
+            Now lets look at the main procedure
+\begin{lstlisting}
+procedure main()
+var a : integer;
+var b : integer;
+begin
+    a = 42;
+    add5(a, b);
+end;
+\end{lstlisting}
+    \Cref{fig:mainBeforeCall} shows us how the state looks like before we start executing the procedure call.
+    \begin{figure}[h]
+        \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
+        \caption{State before the procedure call}
+        \label{fig:mainBeforeCall}
+    \end{figure}
+    The first thing we do when entering the procedure call is to save the stackfram so we can restore the enviroment to its 
+    proper place once we're done. We then clear the enviroment, ensuring that that only variables declared by the procedure is in scope.
+    We then add all the parameters(in our case we add x and res) and copy the values of a and b into x and res respectivly \footnote{since res is out it isn't initialized}.
+    \Cref{fig:mainBeginCallCopy} shows what the state looks like at this point.
+    
+    \begin{figure}[h]
+        \StateDiagram{95}{95}{U,U,I 42,U,I 42}{res/96,x/97}
+        \caption{State when entering add5 (copy semantics).}
+        \label{fig:mainBeginCallCopy}
+    \end{figure}     
+
+    We have now prepared the procedure so that it can be performed.
+    \Cref{fig:mainEndCallCopy} shows how the state looks after its been performed.
+    \begin{figure}[h]
+        \StateDiagram{95}{95}{U,I 47,I 42,U,I 42}{res/96,x/97}
+        \caption{State after res = x +5 in add5 (copy semantics).}
+        \label{fig:mainEndCallCopy}
+    \end{figure}
+
+    Now comes the fun part, \textit{cleaning}! Just performing the function isn't enough, if we were to just drop it here we would have an enviroment that 
+    is drasticly different then when we started. We could just reset the stackfram to what it was when we started, but then b wouldnt get its new value. 
+    What we need to do is copy the values of the out/upd params back to their argument variables. Then we can reset the stackframe making our state look like
+    \cref{fig:mainBeforeCall}. As you can see the free pointer now points to where x used to point and b now has the same value as res. That means that the next time we add something to the enviroment it will
+    overwrite those values in store.     
+        
+    \begin{figure}[h]
+        \StateDiagram{95}{97}{U,I 47,I 42,I 47,I 42}{b/98,a/99}
+        \caption{State after add5(a, b) in main (copy semantics).}
+        \label{fig:mainAfterCall}
+    \end{figure}
+
+        \subsubsection{Reference Semantics}
+            Now, what if \verb+add5+ could instead write \emph{directly} to b
+            in \verb+main+ instead of having to allocate its own copy which is later copied?
+            This is the main advantage of \gls{ref sem}. Lets reuse the example from before.
+            As you can see the from \cref{fig:mainBeforeCall2} the state before we enter the procedure call is the same as during copy semantics.
+            \begin{figure}[h]
+                \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
+                \caption{State before the procedure call}
+                \label{fig:mainBeforeCall2}
+            \end{figure}
+            
+            It is now we encounter our first change. Like before we get the stackframe before clearing the enviroment and adding the parameters, but here comes the change.
+            instead of allocating space and copying the value of the args to the upd/out params we instead set their address to the adress of the corresponding argument.
+            We now get a state that looks like \cref{fig:mainBeginCallRef}. Since x is an obs parameter it is still allocated and copied to as normal.
+            \begin{figure}
+                \StateDiagram{96}{96}{U,I 42,U,I 42}{res/98,x/97}
+                \caption{State when entering add5 (reference out).}
+                \label{fig:mainBeginCallRef}
+            \end{figure}
+
+            Since res now points to the same place as b, any changes to ref will also be reflected by b. This makes cleanup much easier!
+            infact all we have to do after performing the procedure is to reset the enviroment back to where it was and call it a day makng the state look like
+            \cref{fig:mainEndCallRef}.
+        \begin{figure}
+            \StateDiagram{96}{96}{U,I 42,I 47,I 42}{res/98,x/97}
+            \caption{State after res = x+5 in add5 (reference out).}
+            \label{fig:mainEndCallRef}
+        \end{figure}
+
+    \subsection{Q\&A}
+
+    \section{Generics}
+        \subsection{Signature}
+        \subsection{ADT}
+        \subsection{Q\&A}
+
+    \section{Language Standards}
+        \subsection{Software Engineering Implications of Languages}
+        The choice of language can have massive impact on software development. The move to higher abstraction languages have caused a corresponding increase in efficency
+        since the developer can focus all their efforts into what the program should accomplish instead of having to work on the details. 
+       \gls{SLE} has many applications withing software engineering like;
+        \begin{itemize}
+            \item Design, implementation, and usage of DSLs that are tailor made for specific problem or technical domains, like, UI, web services, configurations, testing,
+                    date exchange, interoperablility, depolyment, and distribution.
+            \item Software reverese engineering and re-engineering in many forms, for example, analysis of projects regarding their dependence on open source software,
+                    integration of systems, and migration of systems constrained by legislation or technology.
+            \item Data extraction in the context of data mining, information retrieval, machine learning, big data analytics, social science, digital forensics, and AI, 
+                    with diverse input artifacts to be parsed interchange formats to conform to.
+        \end{itemize}
+        Software languages can also impact the security of any product. If a language has a fundamental flaw, or creates unknown pitfalls that might be hard to spot due to
+        the inherent design of the language it could then be exploited by malicious actors. 
+        \subsection{Reading spesifications}
+        \subsubsection{Backus-Naur Form}
+            \gls{BNF} is format for describing context-free grammars. We use it to describe the syntax of languages. Although it is probably not part of the curiculum
+            it's still important to know since most language specification describe their languages using some variation of BNF most common of which is Extended Backus-Naur form(EBNF).
+            An EBNF consists of terminal symbols and non-terminal production rules which are the restrictions governing how terminal symbols can be combined into a legal sequence. 
+            Examples of terminal symbols include alphanumeric characters, punctuation marks, and whitespace characters. These constructions often end up looking like Haskell data structures,
+            this should hopefully help you understand them.
+            \begin{lstlisting}
+<symbol> ::= __expression__
+            \end{lstlisting}
+            Here is the complete PASCAL like language that only allows assignmentn. in its EBNF form.
+            \begin{lstlisting}
+(* a simple program syntax in EBNF - Wikipedia *)
+program = 'PROGRAM', white space, identifier, white space, 
+            'BEGIN', white space, 
+            { assignment, ";", white space }, 
+            'END.' ;
+identifier = alphabetic character, { alphabetic character | digit } ;
+number = [ "-" ], digit, { digit } ;
+string = '"' , { all characters - '"' }, '"' ;
+assignment = identifier , ":=" , ( number | identifier | string ) ;
+alphabetic character = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+                        | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+                        | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+                        | "V" | "W" | "X" | "Y" | "Z" ;
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+white space = ? white space characters ? ;
+all characters = ? all visible characters ? ;
+            \end{lstlisting}
+            EBNF also includes regex like syntax for expressing repetittion(*,+), optionality(?,[]), and alternatives(|).
+            If the above looks confusing or unintuitive I wouldn't worry. The syntax of EBNF is fairly intuitive and most standards have fairly little of it at once.
+        \subsection{Q\&A}
+
+    \section{Misc.}
+        \subsection{Sum of products}
+        \subsection{Property based assertions}
+        \subsection{Q\&A}
+
+    \appendix
+    \section{Glossary}
+    \printnoidxglossaries
+\end{document}
