@@ -1,0 +1,67 @@
+\documentclass[aspectratio=169,fleqn,xcolor={dvipsnames}]{beamer}
+%Template by Lukas
+
+\usetheme[pageofpages=of]{hubln}
+% dette dokumentet er hoveddokumentet og må kompileres
+% resten skjer i Preamble.tex
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}%For code do \begin{lstlisting}
+\usepackage{color}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{glossaries}
+\usepackage{fancyhdr}
+\usepackage{cleveref}
+\usepackage{epigraph}
+\usepackage{tikz}
+%\definecolor{bg}{HTML}{282828}
+\definecolor{bg}{RGB}{40, 40, 40}
+\setbeamercovered{invisible}
+\hfuzz=8.64pt % Antioverfullbox-inator
+
+\setbeamercolor{block body alerted}{bg=alerted text.fg!10}
+\setbeamercolor{block title alerted}{bg=alerted text.fg!20}
+\setbeamercolor{block body}{bg=structure!10}
+\setbeamercolor{block title}{bg=structure!20}
+\setbeamercolor{block body example}{bg=green!10}
+\setbeamercolor{block title example}{bg=green!20}
+\setbeamertemplate{blocks}[rounded][shadow]
+\graphicspath{ {../assets/} }
+
+\tikzset{onslide/.code args={<#1>#2}{% from https://tex.stackexchange.com/a/6155/263192
+  \only<#1>{\pgfkeysalso{#2}}
+}}
+
+\newcommand{\newLine}{%
+  \hfill\break
+}
+
+%\newcommand{\comment}[1]{}
+\tikzset{vertex/.style={draw, circle, inner sep=1mm}}
+\newcommand{\incomplete}[3][1.5cm]{\begin{tikzpicture}
+\foreach \n in {1,...,#2}{\node[vertex]at({90-360/#2*(\n-1)}:#1)(\n){\n};}
+\foreach \v/\w in {#3}{\draw(\v)--(\w);}
+\end{tikzpicture}}
+\tikzset{properties/.style={orange, ultra thick}}
+\tikzset{propertiesRed/.style={red, ultra thick}}
+\tikzset{propertiesBlue/.style={blue, ultra thick}}
+\tikzset{propertiesGrey/.style={gray, ultra thick}}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Hier die Daten zur Präsentation eintragen
+\author[ls]{Sander Wiig}
+\title[sgp]{Crashcourse INF222}
+\institute{Institutt for informatikk \\ Universitetet i Bergen}
+\date[\today]
+
+\begin{document}
+  \input{Presentation}
+\end{document}

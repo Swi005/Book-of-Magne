@@ -13,7 +13,7 @@
 \usepackage{epigraph}
 \usepackage{tikz}
 \usetikzlibrary{arrows,arrows.meta,backgrounds,shapes,automata,petri,positioning,calc,chains,decorations.pathmorphing,fit}
-\graphicspath{ {assets/} }
+\graphicspath{ {../assets/} }
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
@@ -182,8 +182,7 @@
             \item is an artifical language(i.e made by us humans on purpose)
             \item used to tell machines what to do
         \end{itemize}
-        More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer 
-        can follow.
+        More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer can follow.
         This is of course a very general description and it, therefore, follows that there are many different types of programming languages.
         IT therefore should come as little surprise that we group languages by features and properties. 
         \subsubsection{Types of languages}
@@ -205,7 +204,7 @@
         \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
         These languages have a wide array
         of uses and are usually what we think of when we hear the words programming language. Examples of GPLs are Java and Haskell.\\
-        \begin{figure*}[h]
+        \begin{figure*}[!h]
             \begin{tabular}{|c|c|c}
                 \hline
                 \textbf{Characteristic} &\textbf{DSL vs. GPL}\\
@@ -249,7 +248,7 @@
             The static analyzer builds a parse tree out of the tokens and the concrete syntax. This is then converted into an AST by the abstract syntax rules. This AST is then given to the next part, the Semantic Analyser.
             The AST is type-checked, checked for well-formedness, names are resolved, types are inferred, and much more is discussed in chapter 3. The new AST, now with added information, is then given to the evaluator so that it can be evaluated and produce a result.
             See figure 2. for a visual description of the steps.
-            \begin{figure}[h]
+            \begin{figure}[!h]
                 \centering
                 \begin{minipage}{.5\textwidth}
                     \centering
@@ -673,7 +672,7 @@ begin
 end;
 \end{lstlisting}
     \Cref{fig:mainBeforeCall} shows us what the state looks like before we start executing the procedure call.
-    \begin{figure}[h]
+    \begin{figure}[!h]
         \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
         \caption{State before the procedure call}
         \label{fig:mainBeforeCall}
@@ -682,7 +681,7 @@ end;
     We then add all the parameters(in our case we add x and res) and copy the values of a and b into x and res respectivly \footnote{since res is out it isn't initialized}.
     \Cref{fig:mainBeginCallCopy} shows what the state looks like at this point.
     
-    \begin{figure}[h]
+    \begin{figure}[!h]
         \StateDiagram{95}{95}{U,U,I 42,U,I 42}{res/96,x/97}
         \caption{State when entering add5 (copy semantics).}
         \label{fig:mainBeginCallCopy}
@@ -690,7 +689,7 @@ end;
 
     We have now prepared the procedure so that it can be performed.
     \Cref{fig:mainEndCallCopy} shows how the state looks after its been performed.
-    \begin{figure}[h]
+    \begin{figure}[!h]
         \StateDiagram{95}{95}{U,I 47,I 42,U,I 42}{res/96,x/97}
         \caption{State after res = x +5 in add5 (copy semantics).}
         \label{fig:mainEndCallCopy}
@@ -702,7 +701,7 @@ end;
     \cref{fig:mainBeforeCall}. As you can see the free pointer now points to where x used to point and b now has the same value as a res. That means that the next time we add something to the environment it will
     overwrite those values in the store.     
         
-    \begin{figure}[h]
+    \begin{figure}[!h]
         \StateDiagram{95}{97}{U,I 47,I 42,I 47,I 42}{b/98,a/99}
         \caption{State after add5(a, b) in main (copy semantics).}
         \label{fig:mainAfterCall}
@@ -713,7 +712,7 @@ end;
             in \verb+main+ instead of having to allocate its own copy which is later copied?
             This is the main advantage of \gls{ref sem}. Lets reuse the example from before.
             As you can see the from \cref{fig:mainBeforeCall2} the state before we enter the procedure call is the same as during copy semantics.
-            \begin{figure}[h]
+            \begin{figure}[!h]
                 \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
                 \caption{State before the procedure call}
                 \label{fig:mainBeforeCall2}
@@ -722,7 +721,7 @@ end;
             It is now we encounter our first change. Like before we get the stackframe before clearing the enviroment and adding the parameters, but here comes the change.
             instead of allocating space and copying the value of the args to the upd/out params we instead set their address to the adress of the corresponding argument.
             We now get a state that looks like \cref{fig:mainBeginCallRef}. Since x is an obs parameter it is still allocated and copied to as normal.
-            \begin{figure}
+            \begin{figure}[!h]
                 \StateDiagram{96}{96}{U,I 42,U,I 42}{res/98,x/97}
                 \caption{State when entering add5 (reference out).}
                 \label{fig:mainBeginCallRef}
@@ -731,7 +730,7 @@ end;
             Since res now points to the same place as b, any changes to ref will also be reflected by b. This makes cleanup much easier!
             infact all we have to do after performing the procedure is to reset the enviroment back to where it was and call it a day makng the state look like
             \cref{fig:mainEndCallRef}.
-        \begin{figure}
+        \begin{figure}[!h]
             \StateDiagram{96}{96}{U,I 42,I 47,I 42}{res/98,x/97}
             \caption{State after res = x+5 in add5 (reference out).}
             \label{fig:mainEndCallRef}
@@ -743,8 +742,9 @@ end;
         To explain generics we'll demonstrate an example where generics are useful. Say we wanted to test if some alebraic type was a ring.
         It would be inefficent to create a unique test for each algebraic type we wanted to check. This is where generics are usefull.
         A generic mechanism would let us write only one of these tests. 
+        Any generic mechanism needs three components, a
         Lets start with showing the ASR and datastructures we're going to be using.
-        \begin{lstlisting}
+        \begin{lstlisting}[language=Haskell]
 type Enviroment valuedomain= [(String, ExprAST valuedomain)]
 data ExprAST valuedomain
     = Lit valuedomain TypeName
@@ -754,7 +754,7 @@ data ExprAST valuedomain
     deriving (Eq, Read, Show)
         \end{lstlisting}
         Now for an algebraic structure to be a ring, certain properties need to hold. We, therefore, add some tests to check for these\footnote{The implementation is found in Apendix B}.
-        \begin{lstlisting}
+        \begin{lstlisting}[language=Haskell]
 --Tests that carrier set is an abelian group
 testAssoc :: ExprAST valuedomain
 testAddComm ::ExprAST valuedomain
@@ -774,10 +774,70 @@ tests = [testAssoc, testAddComm, testAddID, testAddInv, testMultAssoc, testMultI
 
         \end{lstlisting}
         \subsection{Signature}
-            A signature contains a list of types and operations on those types. The list of operations describes the allowed input type and expected output tupe.
+        To represent the different types(of algebraic structures) we introduce the concept of a signature. 
+        \begin{lstlisting}[language=Haskell]
+type Signature = ([TypeDeclaration],[FunDeclaration])
+        \end{lstlisting}
+        A signature is a data structure that contains a list of types, and the operations(functions, etc.) that operate on those types.
+        Signatures have other applications other than just generics. Defining functions in signatures means that if we want to expand our language with a new intrinsic function we won't
+        have to change the code anywhere else than in the signature and the accompanying semantic implementation.\\
+        Let's take a look at the signature for the Integers.
+        \begin{lstlisting}[language=Haskell]
+int ::Signature
+int = (["Int", "Bool"],[
+                ("Add", ["Int","Int"],"Int"),
+                ("Mult", ["Int","Int"], "Int"),
+                ("Neg", ["Int"], "Int"),
+                ("Eq", ["Int", "Int"], "Bool"),
+                ("LEq", ["Int", "Int"], "Bool")
+        ])
+        \end{lstlisting}
+        As you see the integers have 5 functions, the first two are binary operators that are needed for a ring, the \verb+neg+ function is to represent the negative numbers.
+        \verb+Eq+ and \verb+LEq+ are needed so we can compare the numbers and check transitivity.
+        Since we have multiple types defined in our signatures we need to tell Haskell about them, this is why we have \verb+valuedomain+ everywhere.
+        But since we have multiple types in the signature we need to create a custom data structure to represent it. \\
+        \begin{lstlisting}[language=Haskell]
+-- | The semantic domain for the rings sigs
+data Ring = BoolDom Bool
+        | NatDom Int Bool
+        | IntDom Int Bool
+        | RealDom Float Bool
+        deriving(Show, Eq, Ord)
+        \end{lstlisting}
+        Now that we have defined what functions these algebraic structures have we need some way of defining their semantics, i.e what they do.
+        To do this we create a \verb+FunctionModel+ for each function implemented by a signature.
+        \begin{lstlisting}[language=Haskell]
+type FunModel valuedomain = FunName -> [valuedomain] -> valuedomain
+        \end{lstlisting}
+        Here is the semantics of our IntegerRing
+        \begin{lstlisting}[language=Haskell]
+--Semantics of a ring(when carrier set is a int)
+intRingModel ::FunModel Ring
+intRingModel "Add" arg =  IntDom (foldl (+) 0 (map unpackInt arg)) False
+intRingModel "Mult" arg = IntDom (foldl (*) 1 (map unpackInt arg)) False
+intRingModel "Neg" [x] = IntDom (negate (unpackInt x)) $ getBool x
+intRingModel "Eq" [x, y] = BoolDom (x==y)
+intRingModel "LEq" [x, y] = BoolDom (x<=y)
+        \end{lstlisting}
+        We now have all we need to generify the evaluator.
+        \begin{lstlisting}[language=Haskell]
+-- | Eval
+eval ::FunModel Ring->Signature->Enviroment Ring->ExprAST Ring->Ring
+eval mod sig env (Lit i _) = i
+eval mod sig env (Var name) = case lookup name env of
+                            Just x -> eval mod sig env x
+                            Nothing -> error "No such var in env"
 
-        \subsection{ADT}
+eval mod (types, funcs) env (Fun name args) | elem name (map (\(x,y,z)->x) funcs) =mod name (map (eval mod (types, funcs) env) args)
+                                            | otherwise= error "Can't find function in signature"
+
+eval mod (sig) env (Assert expr) = let res@(BoolDom b) = eval mod sig env expr in if b then res else error $"Assert did not hold"++ (show expr)
+
+        \end{lstlisting}
+        Instead of the evaluator handling the evaluation of functions we pass it to the function model letting it deal with it according to the implementation defined there.
         \subsection{Property based assertions}
+        In the example above we used asserts to check if an algebraic structure was a ring or not. Having asserts in a language can be extremely useful since it lets us check if certain conditions hold, and if they dont, to stop execution.
+        A program crash is often the best course of action to prevent illegal states. 
         \subsection{Q\&A}
 
     \section{Language Standards}
@@ -797,7 +857,7 @@ tests = [testAssoc, testAddComm, testAddID, testAddInv, testMultAssoc, testMultI
         the inherent design of the language could then be exploited by malicious actors. 
         \subsection{Reading spesifications}
         \subsubsection{Backus-Naur Form}
-            \gls{BNF} is format for describing context-free grammar. We use it to describe the syntax of languages. Although it is probably not part of the curiculum
+            \gls{BNF} is a format for describing context-free grammar. We use it to describe the syntax of languages. Although it is probably not part of the curiculum
             it's still important to know since most language specification describes their languages using some variation of BNF most common of which is the Extended Backus-Naur form(EBNF).
             An EBNF consists of terminal symbols and non-terminal production rules which are the restrictions governing how terminal symbols can be combined into a legal sequence. 
             Examples of terminal symbols include alphanumeric characters, punctuation marks, and whitespace characters. These constructions often end up looking like Haskell data structures,
@@ -893,13 +953,385 @@ class C implements SomeType {
 \end{lstlisting}
     Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
     just like in the Haskell example above.
-
-
+        
+        \subsection{Datastructures in memory}
+        \subsubsection{Arrays}
+        \subsubsection{Records}
+        \subsubsection{Pointers \& linked lists}
         \subsection{Q\&A}
 
     \appendix
     \section{Glossary}
     \printnoidxglossaries
 
-    \section{Generic example code}
+    \section{Code Examples}
+    \subsection{Type Check Example}
+    \begin{lstlisting}[language=Haskell]
+module TypeCheckExample where
+type VarDecl = [(String, ExprType)]
+
+data Expr = 
+        Var String
+        | I Int
+        | B Bool
+        | BinOp Op Expr Expr
+        | UnOp Op Expr
+        | Choice Expr Expr Expr deriving (Show, Eq)
+            
+data Op = Plus | Mult | Or | And | Not | Eq deriving (Show, Eq)
+
+data ExprType = Integer | Boolean deriving (Show, Eq)
+
+typeCheck ::VarDecl->Expr->ExprType
+typeCheck _ (I _) = Integer
+typeCheck _ (B _) = Boolean
+
+typeCheck vars (Var name) = 
+                case lookup name vars of
+                        Just tp -> tp
+                        Nothing -> error $ "No variable could be found named "++name
+
+typeCheck vars (UnOp Not expr) = 
+                        case typeCheck vars expr of
+                                Boolean-> Boolean 
+                                _-> error "Argument not boolean"
+
+typeCheck vars (BinOp Plus left right) = 
+                        case (typeCheck vars left, typeCheck vars right) of
+                                (Integer, Integer)->Integer
+                                _->error "One of the args is not an Integer"
+
+typeCheck vars (BinOp Mult left right) = 
+                        case (typeCheck vars left, typeCheck vars right) of
+                                (Integer, Integer)->Integer
+                                _->error "One of the args is not an Integer"
+
+typeCheck vars (BinOp Or left right) = 
+                        case (typeCheck vars left, typeCheck vars right) of
+                                (Boolean, Boolean)->Boolean
+                                _->error "One of the args is not a Boolean"
+
+typeCheck vars (BinOp And left right) = 
+                        case (typeCheck vars left, typeCheck vars right) of
+                                (Boolean, Boolean)->Boolean
+                                _->error "One of the args is not a Boolean"
+
+typeCheck vars (BinOp Eq left right) = Boolean
+
+typeCheck vars (Choice test left right) = 
+                        case typeCheck vars test of
+                                Boolean | l == r -> r
+                                        | otherwise -> error "Args did not match"
+                                _-> error "Test condition is not a Boolean"
+                        where
+                                l = typeCheck vars left
+                                r = typeCheck vars right
+    \end{lstlisting}
+    \subsection{Type Inference Example}
+    \begin{lstlisting}[language=Haskell]
+module TypeCheckExample where
+
+type ShittyEnviroment = [(String, Expr)]
+
+data Expr = 
+        Var String
+        | IntLit Integer
+        | StrLit Str
+        | Plus Expr Expr
+        | Mult Expr Expr
+
+--New Rules
+--Int + string = string
+--String+String = string
+--String * int = String
+
+data ExprType = Integer | String deriving (Show, Eq)
+
+inferType:: ShittyEnviroment->Expr->ExprType
+inferType _ (IntLit _) = Integer
+inferType _ (StrLit _) = String
+
+inferType env (Var name) = case lookup name env of
+                        Just expr -> inferType env expr
+                        _ -> error "Can't find var"
+
+inferType env (Plus left right) = case (inferType env left, inferType env right) of
+                                (Integer, Integer)->Integer
+                                (_,_)->String --If its not two ints its a string!
+
+ingerType env (Mult left right) = case (inferType env left, inferType env right) of
+                                (String, Integer)-> String
+                                (Integer, Integer)->Integer
+                                _->error "invalid arguments"
+    \end{lstlisting}
+    \subsection{Generic Example}
+    \begin{lstlisting}[language=Haskell]
+module GenericsExample where
+
+type TypeName = String
+type FunName = String
+type VarName = String
+
+type Enviroment valuedomain= [(String, ExprAST valuedomain)]
+--Defines semantics of a signature
+type FunModel valuedomain = FunName -> [valuedomain] -> valuedomain
+
+type FunDeclaration = (FunName, [TypeName], TypeName)
+type TypeDeclaration = TypeName
+
+--Defines what functions types exists
+type Signature = ([TypeDeclaration],[FunDeclaration])
+
+--DS??
+data ExprAST valuedomain
+    = Lit valuedomain TypeName
+    | Fun FunName [ExprAST valuedomain]
+    | Var VarName
+    | Assert (ExprAST valuedomain)
+    deriving (Eq, Read, Show)
+
+
+--DSL Describing Ints
+int ::Signature
+int = (["Int", "Bool"],[
+                ("Add", ["Int","Int"],"Int"),
+                ("Mult", ["Int","Int"], "Int"),
+                ("Neg", ["Int"], "Int"),
+                ("Eq", ["Int", "Int"], "Bool"),
+                ("LEq", ["Int", "Int"], "Bool")
+        ])
+
+--DSL for Describing Reals
+real :: Signature
+real =(["Real", "Bool"],[
+                ("Add", ["Real","Real"],"Real"),
+                ("Mult", ["Real","Real"], "Real"),
+                ("Neg", ["Real"],"Real"),
+                ("Eq", ["Real", "Real"], "Bool"),
+                ("LEq", ["Real", "Real"], "Bool")
+    ])
+--Natural nums
+nat :: Signature 
+nat =(["Nat","Bool"],[
+                ("Add", ["Nat","Nat"],"Nat"),
+                ("Mult", ["Nat","Nat"], "Nat"),
+                ("Eq", ["Nat", "Nat"], "Bool"),
+                ("LEq", ["Nat", "Nat"], "Bool")
+    ])
+--Natural nums
+bool :: Signature 
+bool =(["Bool"],[
+            ("Add", ["Bool","Bool"],"Bool"),
+            ("Mult", ["Bool","Bool"], "Bool"),
+            ("Eq", ["Bool", "Bool"], "Bool"),
+            ("LEq", ["Bool", "Bool"], "Bool")
+        ])
+
+-- | The semantic domain for the rings sigs
+data Ring = BoolDom Bool
+            | NatDom Int Bool
+            | IntDom Int Bool
+            | RealDom Float Bool
+            deriving(Show, Eq, Ord)
+
+unpackInt :: Ring->Int
+unpackInt (IntDom i _) = i
+unpackNat :: Ring->Int
+unpackNat (NatDom n _) = n
+unpackReal :: Ring->Float
+unpackReal (RealDom x _) = x
+unpackBool :: Ring->Bool
+unpackBool (BoolDom q) = q
+
+getBool ::Ring->Bool
+getBool (IntDom _ q) = q
+getBool (NatDom _ q) = q
+getBool (RealDom _ q) = q
+getBool (BoolDom q) = q
+
+
+-- | Semantics 
+
+--Semantics of a ring(when carrier set is a int)
+intRingModel ::FunModel Ring
+intRingModel "Add" arg =  IntDom (foldl (+) 0 (map unpackInt arg)) False
+intRingModel "Mult" arg = IntDom (foldl (*) 1 (map unpackInt arg)) False
+intRingModel "Neg" [x] = IntDom (negate (unpackInt x)) $ getBool x
+intRingModel "Eq" [x, y] = BoolDom (x==y)
+intRingModel "LEq" [x, y] = BoolDom (x<=y)
+
+--Semantics of a ring(when carrier set is a nat)
+natRingModel ::FunModel Ring
+natRingModel "Add" arg = NatDom  (foldl (+) 0 (map unpackNat arg)) False
+natRingModel "Mult" arg = NatDom (foldl (*) 1 (map unpackNat arg)) False
+natRingModel "Neg" [x] = NatDom (negate (unpackNat x)) $ getBool x
+natRingModel "Eq" [x, y] = BoolDom (x==y)
+natRingModel "LEq" [x, y] =BoolDom (x<=y)
+
+--Semantics of a ring(when carrier set is a real)
+realRingModel ::FunModel Ring
+realRingModel "Add" arg =  RealDom (foldl (+) 0 ((map unpackReal arg))) False
+realRingModel "Mult" arg = RealDom (foldl (*) 1 ((map unpackReal arg))) False
+realRingModel "Neg" [x] = RealDom (negate (unpackReal x))  $ getBool x
+realRingModel "Eq" [x, y] = BoolDom (x==y)
+realRingModel "LEq" [x, y] =BoolDom (x<=y)
+
+--Semantics of a ring(when carrier set is bool)
+boolRingModel ::FunModel Ring
+boolRingModel "Add" arg =  BoolDom $ foldl (/=) False (map unpackBool arg)
+boolRingModel "Mult" arg = BoolDom $ foldl (&&) True (map unpackBool arg)
+boolRingModel "Neg" [x] = BoolDom (not (unpackBool x))
+boolRingModel "Eq" [x, y] = BoolDom (x==y)
+boolRingModel "LEq" [x, y] =BoolDom (x<=y)
+
+
+-- | Eval
+eval ::FunModel Ring->Signature->Enviroment Ring->ExprAST Ring->Ring
+eval mod sig env (Lit i _) = i
+eval mod sig env (Var name) = case lookup name env of
+                            Just x -> eval mod sig env x
+                            Nothing -> error "No such var in env"
+
+eval mod (types, funcs) env (Fun name args) | elem name (map (\(x,y,z)->x) funcs) =mod name (map (eval mod (types, funcs) env) args)
+                                            | otherwise= error "Can't find function in signature"
+
+eval mod (sig) env (Assert expr) = let res@(BoolDom b) = eval mod sig env expr in if b then res else error $"Assert did not hold"++ (show expr)
+
+
+-- | Tests that carrier set is abelian group
+testAssoc :: ExprAST valuedomain--We use Integer to represent the set 
+testAssoc = 
+    Assert (
+        Fun "Eq" [
+            Fun "Add" [
+                Fun "Add" [
+                    Var"a",
+                    Var"b"
+                    ], 
+                Var"c"
+            ],
+            Fun "Add" [
+                Var"a", 
+                Fun "Add" 
+                [
+                    Var"b", 
+                    Var"c"
+                ]
+            ]
+        ]
+    )
+
+testAddComm ::ExprAST valuedomain
+testAddComm = 
+    Assert (
+        Fun "Eq" [
+            Fun "Add" [
+                Var "a",
+                Var "b"
+            ],
+            Fun "Add" [
+                Var "b",
+                Var"a"
+            ]
+        ]
+    )
+
+testAddID ::ExprAST valuedomain
+testAddID = 
+    Assert (
+        Fun "Eq" [
+            Fun "Add" [
+                Var "a",
+                Var "addConst"],
+            Var"a"
+        ]
+    )
+
+testAddInv ::ExprAST valuedomain
+testAddInv = 
+    Assert (
+        Fun "Eq" [
+            Fun "Add" [
+                Var"a",
+                Fun "Neg" [
+                    Var"a"
+                ]
+            ],
+            Var "addConst"
+        ]
+    )
+
+--Tests that carrier set is a monoid under multiplication
+testMultAssoc::ExprAST valuedomain
+testMultAssoc = 
+    Assert (
+        Fun "Eq" [
+            Fun "Mult" [
+                Fun "Mult" [
+                    Var"a",
+                    Var"b"
+                ],
+                Var "c"
+            ],
+            Fun "Mult" [
+                Var"a", 
+                Fun "Mult" [
+                    Var"b",
+                    Var"c"
+                ]
+            ]
+        ]
+    )
+
+testMultID ::ExprAST valuedomain
+testMultID = 
+    Assert (
+        Fun "Eq" [
+            Fun "Mult" [
+                    Var"a", 
+                    Var "multConst"
+                ],
+            Var "a"
+        ]
+    )
+
+--Test that multiplication is distributive
+testLDist :: ExprAST valuedomain
+testLDist = 
+    Assert (
+        Fun "Eq" [
+            Fun "Mult" [
+                Var "a", 
+                Fun "Add" [Var "b",Var "c"]
+            ], 
+            Fun "Add" [
+                (Fun "Mult" [Var"a",Var "b"]),
+                (Fun "Mult" [Var"a",Var "c"])
+            ] 
+        ]
+    )
+
+testRDist :: ExprAST valuedomain
+testRDist =  
+    Assert ( 
+        Fun "Eq" [
+            Fun "Mult" [
+                Fun "Add" [Var "b", Var"c"], 
+                Var"a"
+                ], 
+            Fun "Add" [
+                (Fun "Mult" [Var "b",Var "a"]),
+                (Fun "Mult" [Var "c",Var "a"])
+                ] 
+        ]
+    )
+
+
+
+tests = [testAssoc, testAddComm, testAddID, testAddInv, testMultAssoc, testMultID, testLDist, testRDist]
+
+-- | main
+test tpname (sig, model) dta = let env = [("a", Lit (dta!!0) tpname), ("b", Lit (dta!!1) tpname), ("c", Lit (dta!!2) tpname), ("multConst", Lit (dta!!3) tpname), ("addConst", Lit (dta!!2) tpname)] in
+    map (eval model sig env) tests
+    \end{lstlisting}
 \end{document}
