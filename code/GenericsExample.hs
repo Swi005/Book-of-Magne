@@ -4,9 +4,9 @@ type TypeName = String
 type FunName = String
 type VarName = String
 
-type Enviroment = [(String, ExprAST)]
+type Enviroment valuedomain= [(String, ExprAST valuedomain)]
 --Defines semantics of a signature
-type FunModel = FunName -> [Integer] -> Integer
+type FunModel valuedomain = FunName -> [valuedomain] -> valuedomain
 
 type FunDeclaration = (FunName, [TypeName], TypeName)
 type TypeDeclaration = TypeName
@@ -15,11 +15,11 @@ type TypeDeclaration = TypeName
 type Signature = ([TypeDeclaration],[FunDeclaration])
 
 --DS??
-data ExprAST
-    = Lit Integer TypeName
-    | Fun FunName [ExprAST]
+data ExprAST valuedomain
+    = Lit valuedomain TypeName
+    | Fun FunName [ExprAST valuedomain]
     | Var VarName
-    | Assert (ExprAST)
+    | Assert (ExprAST valuedomain)
     deriving (Eq, Read, Show)
 
 
@@ -52,14 +52,14 @@ nat =(["Nat"],[
     ])
 
 --Semantics of a ring
-ringModel ::FunModel 
+ringModel ::Num valuedomain=>Show valuedomain=>Ord valuedomain=>Eq valuedomain=>FunModel valuedomain
 ringModel "Add" arg =  foldl (+) 0 arg
 ringModel "Mult" arg = foldl (*) 1 arg
 ringModel "Neg" [x] = negate x
 ringModel "Eq" [x, y] | x==y = 1 |otherwise =  0--Emulate booleans wiht int 0=false, 1=true
-ringModel "LEq" [x, y] | x<=y  = 1 | otherwise  = 0
+ringModel "LEq" [x, y] | x<=y = 1 | otherwise  = 0
 
-eval ::FunModel->Signature->Enviroment->ExprAST->Integer
+eval ::Num valuedomain=>Show valuedomain=>Ord valuedomain=>Eq valuedomain=>FunModel valuedomain->Signature->Enviroment valuedomain->ExprAST valuedomain->valuedomain
 eval mod sig env (Lit i _) = i
 eval mod sig env (Var name) = case lookup name env of
                             Just x -> eval mod sig env x
@@ -72,7 +72,7 @@ eval mod (sig) env (Assert expr) = let res = eval mod sig env expr in if res == 
 
 
 --Tests that carrier set is abelian group
-testAssoc :: ExprAST--We use Integer to represent the set 
+testAssoc :: ExprAST valuedomain--We use Integer to represent the set 
 testAssoc = 
     Assert (
         Fun "Eq" [
@@ -94,7 +94,7 @@ testAssoc =
         ]
     )
 
-testAddComm ::ExprAST
+testAddComm ::ExprAST valuedomain
 testAddComm = 
     Assert (
         Fun "Eq" [
@@ -109,7 +109,7 @@ testAddComm =
         ]
     )
 
-testAddID ::ExprAST
+testAddID ::ExprAST valuedomain
 testAddID = 
     Assert (
         Fun "Eq" [
@@ -120,7 +120,7 @@ testAddID =
         ]
     )
 
-testAddInv ::ExprAST
+testAddInv ::ExprAST valuedomain
 testAddInv = 
     Assert (
         Fun "Eq" [
@@ -135,7 +135,7 @@ testAddInv =
     )
 
 --Tests that carrier set is a monoid under multiplication
-testMultAssoc::ExprAST
+testMultAssoc::ExprAST valuedomain
 testMultAssoc = 
     Assert (
         Fun "Eq" [
@@ -156,7 +156,7 @@ testMultAssoc =
         ]
     )
 
-testMultID ::ExprAST
+testMultID ::ExprAST valuedomain
 testMultID = 
     Assert (
         Fun "Eq" [
@@ -169,7 +169,7 @@ testMultID =
     )
 
 --Test that multiplication is distributive
-testLDist :: ExprAST
+testLDist :: ExprAST valuedomain
 testLDist = 
     Assert (
         Fun "Eq" [
@@ -184,7 +184,7 @@ testLDist =
         ]
     )
 
-testRDist :: ExprAST
+testRDist :: ExprAST valuedomain
 testRDist =  
     Assert ( 
         Fun "Eq" [
@@ -203,5 +203,5 @@ testRDist =
 
 tests = [testAssoc, testAddComm, testAddID, testAddInv, testMultAssoc, testMultID, testLDist, testRDist]
 
-test tpname (sig, model) = let env = [("a", Lit 1 tpname), ("b", Lit 2 tpname), ("c", Lit 3 tpname), ("multConst", Lit 1 tpname), ("addConst", Lit 0 tpname)] in
-    map (show.(eval model sig env)) tests
+test tpname (sig, model) dta= let env = [("a", Lit (dta!!0) tpname), ("b", Lit (dta!!1) tpname), ("c", Lit (dta!!2) tpname), ("multConst", Lit 1 tpname), ("addConst", Lit 0 tpname)] in
+    map (eval model sig env) tests
