@@ -1,4 +1,4 @@
-\documentclass{article}
+\documentclass[tikz, border=5mm]{article}
 
 \usepackage{geometry}
 \usepackage{amsmath}
@@ -6,13 +6,14 @@
 \usepackage{listings}%For code do \begin{lstlisting}
 \usepackage{color}
 \usepackage{tikz-cd}
+\usepackage{tikz}
 \usepackage{float}
 \usepackage{glossaries}
 \usepackage{fancyhdr}
 \usepackage{cleveref}
 \usepackage{epigraph}
-\usepackage{tikz}
-\usetikzlibrary{arrows,arrows.meta,backgrounds,shapes,automata,petri,positioning,calc,chains,decorations.pathmorphing,fit}
+\usepackage{bytefield}
+\usetikzlibrary{arrows,arrows.meta,backgrounds,shapes,automata,petri,positioning,calc,chains,decorations.pathmorphing,fit,decorations.pathreplacing}
 \graphicspath{ {../assets/} }
 
 \definecolor{dkgreen}{rgb}{0,0.6,0}
@@ -195,11 +196,11 @@
             \item GPL
         \end{itemize}
 
-        \Gls{DSL} are as the name suggest languages with a "specific" domain.\\
+        \Gls{DSL} are as the name suggests languages with a "specific" domain.\\
         DSLs usually have limited scope and use. Examples are JSON and SQL.     
         A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
         Optimized for a certain problem/domain. 
-        DSLs can be further subdivided into external DSL(seperate programming languages), and internal DLS(language-like interfaec as a library.)
+        DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)
 
         \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
         These languages have a wide array
@@ -238,7 +239,7 @@
         \subsubsection{The Interpreter process}
             
             An \gls{interpreter} is a computer program that directly executes instructions written in a programming language.
-            This differs from \glspl{compiler} since they dont have to translate the instructions into machine code to run it. 
+            This differs from \glspl{compiler} since they don't have to translate the instructions into machine code to run it. 
             We use interpreters to define the semantics of our \gls{AST}(AST). They are relatively straightforward to implement since
             since each construct of the AST defines the semantics of that construct.\\
             \newline
@@ -307,7 +308,7 @@
         on the information contained in a parse tree. Translating a parse tree into a
         corresponding abstract syntax tree is called imploding the parse tree.
         Given an abstract syntax tree, it is possible to reconstruct a parse tree or program text, given the original grammar - though the resulting program may be
-        slightly different in terms of spaces and punctation. This is called unparsing or
+        slightly different in terms of spaces and punctuation. This is called unparsing or
         pretty-printing (particularly if the output is nicely formatted). Parsing, imploding, pretty-printing, and then reparsing may not yield the exact same parse tree
         as the original tree, but it should still implode to the same abstract syntax tree (otherwise there is a bug in your toolchain!).
 
@@ -397,14 +398,14 @@ class C implements SomeType {
         \end{itemize}
         \subsection{Static Analysis}
             \subsubsection{Type Checking}
-            Programming language typing always falls into one or two categories; static, and dynamic typing. Static typing is when typecheking happens at compiletime, 
+            Programming language typing always falls into one or two categories; static, and dynamic typing. Static typing is when type checking happens at compile-time, 
             while dynamic typing happens during runtime. We will focus on static typing. 
             Statically typed languages typically have these properties.
             \begin{itemize}
                 \item Variables and data structures must be declared before use.
                 \item Variables and data structure fields can only hold values of the declared type.
                 \item Operations(i.e functions, procedures, methods) and types must be declared.
-                \item Declating the exact types of variables and operations isnt always needed. Some langauges use type inference (Discussed in 3.2.3).
+                \item Declaring the exact types of variables and operations isn't always needed. Some languages use type inference (Discussed in 3.2.3).
             \end{itemize}
 
             What is a type checker and how does it work? 
@@ -418,7 +419,7 @@ class C implements SomeType {
             \end{itemize}
             \subsubsection*{Let's do a practical example}
             Here's the abstract syntax for our Simple Typed Language or STL for short.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
     type VarDecl = [(String, ExprType)]
 
     data Expr =
@@ -432,31 +433,31 @@ class C implements SomeType {
     data Op = Plus | Mult | Or | And | Not | Eq deriving (Show, Eq
             \end{lstlisting}
             Before we can continue we need to define the types that are allowed. We decide to use two types, Integers, and Booleans.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
     data ExprType = Integer | Boolean deriving (Show, Eq)
             \end{lstlisting}
-            Now to the meat of the excercise, the typechecker itself.
+            Now to the meat of the exercise, the type checker itself.
             The usual way to do this in Haskell(and most other languages I've experienced) is to define a series of recursive functions, one for each
             expression/operand.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
                 typeCheck :: VarDecl->Expr->ExprType
             \end{lstlisting}
             I have found it easiest, to begin with, the cases that form the basic "building blocks" of a language, the literals. It is easy to know the type of Int Literals(Integer obviously), and Bool Literals(Boolean).
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
     typeCheck _ (I _) = Integer
     typeCheck _ (B _) = Boolean
             \end{lstlisting} 
-            After these "base" cases we add a case for Vars, this is slightly more complicated since the type is dependent on the list of var decls, 
+            After these "base" cases we add a case for Vars, this is slightly more complicated since the type is dependent on the list of var declarations, 
             so we need to check the VarDecl list.
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
     typeCheck vars (Var name) = case lookup name vars of
                 Just tp -> tp
                 Nothing -> error $ "No variable could be found named "++name
             \end{lstlisting}
-            We use a pretty clever Haskell expression called "case". This lets us patternmatch the result of the function call in lookup. 
-            I strongly recommend that you all learn how to use these since they are extremly usefull and I'll be using them liberaly during this example.\\
+            We use a pretty clever Haskell expression called "case". This lets us pattern match the result of the function call in lookup. 
+            I strongly recommend that you all learn how to use these since they are extremely useful and I'll be using them liberally during this example.\\
             We now move on to the ops. 
-            \begin{lstlisting}
+            \begin{lstlisting}[language=Haskell]
 typeCheck vars (UnOp Not expr) = 
                 case typeCheck vars expr of
                         Boolean-> Boolean 
@@ -487,8 +488,8 @@ typeCheck vars (BinOp Eq left right) = Boolean
             They all check that the arguments are of the correct type and return the operand type if so, if not they raise an error.
             Eq is the odd one out since it returns a boolean no matter what since it checks if two expressions are the same.\\
             The last case is the most complex. Choice tests a boolean condition and returns one of the two expressions depending on the value.
-            The problem is that we dont know which branch will return. We have therefore decided both branches need to be of the same type.
-            \begin{lstlisting}
+            The problem is that we don't know which branch will return. We have therefore decided both branches need to be of the same type.
+            \begin{lstlisting}[language=Haskell]
 typeCheck vars (Choice test left right) = 
         case typeCheck vars test of
                 Boolean | l == r -> r
@@ -509,14 +510,14 @@ typeCheck vars (Choice test left right) =
                     \item All procedure calls/declarations are wellformed.
                     \item and much more.
                 \end{itemize}
-                To check if a program is wellformed we usually implement a so-called constraint checker. These are pretty much just unitcases.
+                To check if a program is wellformed we usually implement a so-called constraint checker. These are pretty much just unit tests.
                 The recipe for a constrain checker is as follows;
                 \begin{itemize}
                     \item \textbf{Negative test cases} - Designate one negative test case for each constraint that should be checked. 
                     Ideally, each such test case should violate only one constraint.
                     \item \textbf{Reporting} - Choose an approach to "reporting". The result of constraint violation may be communicated either through
                                             a boolean value, as a list of errors, or by throwing an exception.
-                    \item \textbf{Modularity} - Implement each constraint in a separate function, therby allowing modularity and testing.
+                    \item \textbf{Modularity} - Implement each constraint in a separate function, thereby allowing modularity and testing.
                     \item \textbf{Testing} - The constraint violations must be correctly detected for the negative test cases. The positive test case must pass.
                 \end{itemize}
             \subsubsection{Type inference}
@@ -532,8 +533,8 @@ data Expr =
         | Plus Expr Expr
         | Mult Expr Expr
             \end{lstlisting}
-            We decide on some rules for those pesky ambigious expressions. A string plus another string produces a string, an integer, and a string also produces a string.
-            We also decide that it should be possible to multiply a string with a number. Using thse rules we start to make our type inferer.
+            We decide on some rules for those pesky ambiguous expressions. A string plus another string produces a string, an integer, and a string also produces a string.
+            We also decide that it should be possible to multiply a string with a number. Using these rules we start making our type inferior.
             Like previously we start with the literals and vars.
             \begin{lstlisting}[language=Haskell]
 inferType _ (IntLit _) = Integer
@@ -568,19 +569,19 @@ ingerType env (Mult left right) = case (inferType env left, inferType env right)
         We now have a place to store stuff, but how do we know where it is in the store. This is where \glspl{env} comes into play.\\
         An environment is a map between variables and their location in the store. 
         \subsection{Scoping}
-        A \gls{scope} is a collection of identifier bindings - i.e, what is captured by the enviroment at some point in the code or in time.\\
+        A \gls{scope} is a collection of identifier bindings - i.e, what is captured by the environment at some point in the code or in time.\\
         The scope of a declaration includes all the points in the code where that declaration exists(binding). In lexical scoping the
         scope of a declaration is usually either included in the declaration constructor or extends to the nearest scoping container(think. Haskells let, where | Java curly-braces).
         In dynamic scoping, the scope of a declaration is determined at runtime and lasts until the program exits the scoping construct.
         Bindings can also be shadowed by declaring a new variable with the same name as an in-scope variable. 
         The results in the outer variables passing out of scope while the inner variable is in-scope.
         The shadowed variable still exists, but it's not accessible until the shadowing variable passes out of scope.\\
-        Scoping is especially important when it comes to procedures and they usually have their own enviroments.\\
+        Scoping is especially important when it comes to procedures and they usually have their own environments.\\
         \textit{Speaking of procedures\dots}
         \subsection{Q\&A}
 
     \section{Procedures}
-    A procedure is a programing construct that abstracts away the implementation of an algorithm. Instead of writing 20 lines of code 
+    A procedure is a programming construct that abstracts away the implementation of an algorithm. Instead of writing 20 lines of code 
     every time you want to run an algorithm we simply call a procedure with those 20 lines of code inside it. This increases the readability 
     of our code and makes it easier to write it. 
     \subsection{Procedure Declarations}
@@ -600,7 +601,7 @@ procedure p ( upd a: integer , out b: integer ; obs c : boolean ) ;
     end;
     \end{lstlisting}
     The abstract syntax would be something like this in Haskell;
-    \begin{lstlisting}
+    \begin{lstlisting}[language=Haskell]
 -- | Procedure declaration
 data ProcedureDeclaration = Proc
     String -- Name of the procedure
@@ -623,26 +624,26 @@ type VarDecl = (Var,Type)
     \subsubsection{Parameters \& Local Variables}
     A \gls{local var} is a variable that only exits in a specific part of the program. We're going to talk about them in the context of procedures.
     These local variables are declared or defined and only used within that procedure.
-    Since the procedure exists in a vaccume, the local variable is allowed to have the same name as variables in other parts of the program. 
+    Since the procedure exists in a vacuum, the local variable is allowed to have the same name as variables in other parts of the program. 
     Since the variable is stored at a different store location any change to the local variable wouldn't change the variable outside.
 
-    \gls{param} are the variables the procedure uses to communicate to the outside world. They are basically variables, but with one key difference;
+    \gls{param} are the variables the procedure uses to communicate to the outside world. They are variables, but with one key difference;
     They also specify \textit{how} it communicates with the outside world, the parameters specify if the variable is an output variable(write), observed only(read), or updatable(is this a word?)(read and write).\\
     Another way of looking at parameters is that parameters are local variables that are initialized with the passed arguments at invocation time.
     \subsubsection{Performing a Procedure}
         When performing a function we can usually assume that the parameters have already been added to the environment and initialized and that except for those parameters we have a clean
-        enviroment to work with.
+        environment to work with.
         The performing of a procedure consists of the following steps;
         \begin{enumerate}
-            \item The first is that we need to somehow remember the current enviroment or delete all the local variables when we're done.
+            \item The first is that we need to somehow remember the current environment or delete all the local variables when we're done.
                 The best way is to get the current \gls{stackframe}.
             \item We then add all the local variables.
             \item We then execute the procedure statements.
-            \item We then reset the enviroment back to how it looked before using the saved stackframe from (1). This ensures that all local variables
+            \item We then reset the environment back to how it looked before using the saved stack frame from (1). This ensures that all local variables
                 that shouldn't exist outside the procedure are removed. 
         \end{enumerate}
     \subsection{Executing a Procedure Call}
-        We now know how to actually perform a procedure, but for us to even be able to perform a procedure in the first place we need to prepare the enviroment and program for it.
+        We now know how to actually perform a procedure, but for us to even be able to perform a procedure in the first place we need to prepare the environment and program for it.
         There are two main ways of making the program ready to perform a procedure. These are dependent on what type of \gls{argument} passing we are doing.
     \subsection{Arg Passing}%Difference between args and params
         Argument passing fall into one of two camps.
@@ -678,7 +679,7 @@ end;
         \label{fig:mainBeforeCall}
     \end{figure}
     The first thing we do when entering the procedure call is to save the stackframe so we can restore the environment to its proper place once we're done. We then clear the environment, ensuring that the only variable declared by the procedure is in scope.
-    We then add all the parameters(in our case we add x and res) and copy the values of a and b into x and res respectivly \footnote{since res is out it isn't initialized}.
+    We then add all the parameters(in our case we add x and res) and copy the values of a and b into x and res respectively \footnote{since res is out it isn't initialized}.
     \Cref{fig:mainBeginCallCopy} shows what the state looks like at this point.
     
     \begin{figure}[!h]
@@ -696,7 +697,7 @@ end;
     \end{figure}
 
     Now comes the fun part, \textit{cleaning}! Just performing the function isn't enough, if we were to just drop it here we would have an environment that 
-    is drastically different than then when we started. We could just reset the stackfram to what it was when we started, but then b wouldnt get its new value. 
+    is drastically different than then when we started. We could just reset the stackframe to what it was when we started, but then b wouldn't get its new value. 
     What we need to do is copy the values of the out/upd params back to their argument variables. Then we can reset the stackframe making our state look like
     \cref{fig:mainBeforeCall}. As you can see the free pointer now points to where x used to point and b now has the same value as a res. That means that the next time we add something to the environment it will
     overwrite those values in the store.     
@@ -718,8 +719,8 @@ end;
                 \label{fig:mainBeforeCall2}
             \end{figure}
             
-            It is now we encounter our first change. Like before we get the stackframe before clearing the enviroment and adding the parameters, but here comes the change.
-            instead of allocating space and copying the value of the args to the upd/out params we instead set their address to the adress of the corresponding argument.
+            It is now we encounter our first change. Like before we get the stackframe before clearing the environment and adding the parameters, but here comes the change.
+            instead of allocating space and copying the value of the args to the upd/out params we instead set their address to the address of the corresponding argument.
             We now get a state that looks like \cref{fig:mainBeginCallRef}. Since x is an obs parameter it is still allocated and copied to as normal.
             \begin{figure}[!h]
                 \StateDiagram{96}{96}{U,I 42,U,I 42}{res/98,x/97}
@@ -739,8 +740,8 @@ end;
     \subsection{Q\&A}
 
     \section{Generics}
-        To explain generics we'll demonstrate an example where generics are useful. Say we wanted to test if some alebraic type was a ring.
-        It would be inefficent to create a unique test for each algebraic type we wanted to check. This is where generics are usefull.
+        To explain generics we'll demonstrate an example where generics are useful. Say we wanted to test if some algebraic type was a ring.
+        It would be inefficient to create a unique test for each algebraic type we wanted to check. This is where generics are useful.
         A generic mechanism would let us write only one of these tests. 
         Any generic mechanism needs three components, a
         Lets start with showing the ASR and datastructures we're going to be using.
@@ -753,7 +754,7 @@ data ExprAST valuedomain
     | Assert (ExprAST valuedomain)
     deriving (Eq, Read, Show)
         \end{lstlisting}
-        Now for an algebraic structure to be a ring, certain properties need to hold. We, therefore, add some tests to check for these\footnote{The implementation is found in Apendix B}.
+        Now for an algebraic structure to be a ring, certain properties need to hold. We, therefore, add some tests to check for these\footnote{The implementation is found in Appendix B}.
         \begin{lstlisting}[language=Haskell]
 --Tests that carrier set is an abelian group
 testAssoc :: ExprAST valuedomain
@@ -836,7 +837,7 @@ eval mod (sig) env (Assert expr) = let res@(BoolDom b) = eval mod sig env expr i
         \end{lstlisting}
         Instead of the evaluator handling the evaluation of functions we pass it to the function model letting it deal with it according to the implementation defined there.
         \subsection{Property based assertions}
-        In the example above we used asserts to check if an algebraic structure was a ring or not. Having asserts in a language can be extremely useful since it lets us check if certain conditions hold, and if they dont, to stop execution.
+        In the example above we used asserts to check if an algebraic structure was a ring or not. Having asserts in a language can be extremely useful since it lets us check if certain conditions hold, and if they don't, to stop execution.
         A program crash is often the best course of action to prevent illegal states. 
         \subsection{Q\&A}
 
@@ -847,8 +848,8 @@ eval mod (sig) env (Assert expr) = let res@(BoolDom b) = eval mod sig env expr i
        \gls{SLE} has many applications within software engineering like;
         \begin{itemize}
             \item Design, implementation, and usage of DSLs that are tailor-made for a specific problem or technical domains, like, UI, web services, configurations, testing,
-                    date exchange, interoperablility, depolyment, and distribution.
-            \item Software reverese engineering and re-engineering in many forms, for example, analysis of projects regarding their dependence on open source software,
+                    date exchange, interoperability, deployment, and distribution.
+            \item Software reverse engineering and re-engineering in many forms, for example, analysis of projects regarding their dependence on open source software,
                     integration of systems, and migration of systems constrained by legislation or technology.
             \item Data extraction in the context of data mining, information retrieval, machine learning, big data analytics, social science, digital forensics, and AI, 
                     with diverse input, artifacts to be parsed interchange formats to conform to.
@@ -857,7 +858,7 @@ eval mod (sig) env (Assert expr) = let res@(BoolDom b) = eval mod sig env expr i
         the inherent design of the language could then be exploited by malicious actors. 
         \subsection{Reading spesifications}
         \subsubsection{Backus-Naur Form}
-            \gls{BNF} is a format for describing context-free grammar. We use it to describe the syntax of languages. Although it is probably not part of the curiculum
+            \gls{BNF} is a format for describing context-free grammar. We use it to describe the syntax of languages. Although it is probably not part of the curriculum
             it's still important to know since most language specification describes their languages using some variation of BNF most common of which is the Extended Backus-Naur form(EBNF).
             An EBNF consists of terminal symbols and non-terminal production rules which are the restrictions governing how terminal symbols can be combined into a legal sequence. 
             Examples of terminal symbols include alphanumeric characters, punctuation marks, and whitespace characters. These constructions often end up looking like Haskell data structures,
@@ -884,13 +885,27 @@ digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
 white space = ? white space characters ? ;
 all characters = ? all visible characters ? ;
             \end{lstlisting}
-            EBNF also includes regex like syntax for expressing repetittion(*,+), optionality(?,[]), and alternatives(|).
+            EBNF also includes regex like syntax for expressing repetition(*,+), optionality(?,[]), and alternatives(|).
             If the above looks confusing or unintuitive I wouldn't worry. The syntax of EBNF is fairly intuitive and most standards have fairly little of it at once.
         \subsection{Q\&A}
 
     \section{Misc.}
         \subsection{Datastructures in memory}
         \subsubsection{Arrays}
+            Say we have an array of $n$ elements of type $T$, and the type $T$ takes up 4 bytes of memory. Lets also assume that the header is 8 bytes
+            The array would then look like this in the store.
+            \begin{figure}[!h]
+                \begin{bytefield}
+                    \begin{rightwordgroup}{Arr<T>[]}
+                        \memsection{010f}{000}{10}{}
+                        \memsection{0112}{000f}{4}{T_1}
+                        \memsection{0108}{0012}{4}{T_0}
+                        \memsection{0100}{0008}{8}{Array Header}
+                    \end{rightwordgroup}
+                    \memsection{0000}{0100}{10}{\dots}
+                \end{bytefield}
+                \caption{Array layout}
+            \end{figure}
         \subsubsection{Records}
         \subsubsection{Pointers \& linked lists}
         \subsection{Q\&A}
@@ -992,7 +1007,7 @@ inferType env (Var name) = case lookup name env of
 
 inferType env (Plus left right) = case (inferType env left, inferType env right) of
                                 (Integer, Integer)->Integer
-                                (_,_)->String --If its not two ints its a string!
+                                (_,_)->String --If it's not two ints it's a string!
 
 ingerType env (Mult left right) = case (inferType env left, inferType env right) of
                                 (String, Integer)-> String

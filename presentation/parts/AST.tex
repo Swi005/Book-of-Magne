@@ -8,18 +8,18 @@
 
 \subsection*{Sum of Products}
 \begin{frame}[fragile]{Sum of Products}
-    \begin{minted}[haskell]
+    \begin{lstlisting}[language=Haskell]
         data SomeType = A Bool Bool Bool
                         | B Bool
                         | C
-    \end{minted}
+    \end{lstlisting}
 \end{frame}
 
 \begin{frame}{Sum of Products}
     \begin{equation*}
         \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}_{A} + \underbrace{\text{Bool}}_{B} + \underbrace{1}_{C}
     \end{equation*}
-    The Bool type can take on 2 different values ( False and True ), so the A constructor can construct $2 * 2 * 2 = 8$ different values.\\
+    The Bool type can take on 2 different values (True or False ), so the A constructor can construct $2 * 2 * 2 = 8$ different values.\\
     the total numbers of values of type SomeType is $8 + 2 + 1 = 11$, as the data type is the sum of the three products we've just described.
 \end{frame}
 
@@ -55,6 +55,7 @@
     Some languages don't specify the type of expressions and therefore need to be inferred.
     Example!
 \end{frame}
+
 \subsection*{Q\&A}
 \begin{frame}{Questions?}
     \begin{figure}

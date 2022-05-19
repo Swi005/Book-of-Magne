@@ -1,0 +1,14 @@
+{
+    "svn.delete.ignoredRulesForDeletedFiles": [
+        "presentation\\Preamble.aux",
+        "presentation\\Preamble.fdb_latexmk",
+        "presentation\\Preamble.fls",
+        "presentation\\Preamble.log",
+        "presentation\\Preamble.nav",
+        "presentation\\Preamble.out",
+        "presentation\\Preamble.snm",
+        "presentation\\Preamble.synctex(busy)",
+        "presentation\\Preamble.toc",
+        "presentation\\Preamble.vrb"
+    ]
+}
