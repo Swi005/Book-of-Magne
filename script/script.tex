@@ -12,7 +12,6 @@
 \usepackage{fancyhdr}
 \usepackage{cleveref}
 \usepackage{epigraph}
-\usepackage{bytefield}
 \usetikzlibrary{arrows,arrows.meta,backgrounds,shapes,automata,petri,positioning,calc,chains,decorations.pathmorphing,fit,decorations.pathreplacing}
 \graphicspath{ {../assets/} }
 
@@ -894,18 +893,7 @@ all characters = ? all visible characters ? ;
         \subsubsection{Arrays}
             Say we have an array of $n$ elements of type $T$, and the type $T$ takes up 4 bytes of memory. Lets also assume that the header is 8 bytes
             The array would then look like this in the store.
-            \begin{figure}[!h]
-                \begin{bytefield}
-                    \begin{rightwordgroup}{Arr<T>[]}
-                        \memsection{010f}{000}{10}{}
-                        \memsection{0112}{000f}{4}{T_1}
-                        \memsection{0108}{0012}{4}{T_0}
-                        \memsection{0100}{0008}{8}{Array Header}
-                    \end{rightwordgroup}
-                    \memsection{0000}{0100}{10}{\dots}
-                \end{bytefield}
-                \caption{Array layout}
-            \end{figure}
+            
         \subsubsection{Records}
         \subsubsection{Pointers \& linked lists}
         \subsection{Q\&A}
