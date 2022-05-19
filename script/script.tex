@@ -186,7 +186,7 @@
         This is of course a very general description and it, therefore, follows that there are many different types of programming languages.
         IT therefore should come as little surprise that we group languages by features and properties. 
         \subsubsection{Types of languages}
-        There are many ways of grouping languages. THey can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
+        There are many ways of grouping languages. They can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
         For now, we're going to group them by paradigm, and Generality vs. Specificity.
         \subsubsection*{Generality vs. Specificity}
         Languages are usually grouped into two categories when based on their specificity.
@@ -195,9 +195,9 @@
             \item GPL
         \end{itemize}
 
-        \Gls{DSL} are as the name sugest languages with a "specific" domain.\\
+        \Gls{DSL} are as the name suggest languages with a "specific" domain.\\
         DSLs usually have limited scope and use. Examples are JSON and SQL.     
-        A Domain Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
+        A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
         Optimized for a certain problem/domain. 
         DSLs can be further subdivided into external DSL(seperate programming languages), and internal DLS(language-like interfaec as a library.)
 
@@ -340,10 +340,10 @@ data SomeType = A Bool Bool Bool
             Here the type SomeType has 3 constructors, A, B, and C, where A takes 3 parameters, B takes one, and C zero. 
             The type of SomeType could be expressed algebraically as
             \begin{align*}
-                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}{A} + \underbrace{\text{Bool}}{B} + \underbrace{1}{C}
+                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}_{A} + \underbrace{\text{Bool}}_{B} + \underbrace{1}_{C}
             \end{align*}
-            The Bool type can take on 2 different values3
-            ( False and True ), so the constructor A
+            The Bool type can take on 2 different values
+            ( False and True ), so the constructor
             can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
             make from 3 booleans (e.g. A True False False is one example). The constructor B can
             produce 2 different values, and C can only produce one (not zero!).
@@ -889,71 +889,6 @@ all characters = ? all visible characters ? ;
         \subsection{Q\&A}
 
     \section{Misc.}
-        \subsection{Sum of products}
-            You may have encountered the term \gls{sum of prod}, lets quickly run over why we use the terms \textit{sum} and \textit{product} 
-            to describe the data types, and show some examples in both Haskell and Java.
-            \subsubsection*{Haskell}
-            \begin{lstlisting}[language=Haskell]
-data SomeType = A Bool Bool Bool
-                | B Bool
-                | C
-            \end{lstlisting}
-            Here the type SomeType has 3 constructors, A, B, and C, where A takes 3 parameters, B takes one, and C zero. 
-            The type of SomeType could be expressed algebraically as
-            \begin{align*}
-                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}{A} + \underbrace{\text{Bool}}{B} + \underbrace{1}{C}
-            \end{align*}
-            The Bool type can take on 2 different values3
-            ( False and True ), so the constructor A
-            can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
-            make from 3 booleans (e.g. A True False False is one example). The constructor B can
-            produce 2 different values, and C can only produce one (not zero!).
-            Thus, the total number of values of type SomeType are $8 + 2 + 1 = 11$, as the data type
-            is the sum of the three products we've just described.\\
-            In short, a sum type denotes “one of” its constituent types (if your function takes SomeType
-            as input, it will get either (A b1 b2 b3 ), (B b1) or C for some boolean values b1 . . .), while
-            a product type denotes “all of” its constituent types (e.g. a value constructed with A will
-            have all 3 booleans present.) Another way to express a product type in Haskell is with tuples,
-            e.g.
-            \begin{lstlisting}[language=Haskell]
-type MyTriple = (Bool, Int , Char)
-            \end{lstlisting}
-            \subsubsection*{Java}
-            In Java, we can model the same kind of data types using classes and inheritance. The instance
-            variables of a class determine a “product” type, e.g.
-            \begin{lstlisting}[language=Java]
-class SomeClass {
-    boolean a;
-    boolean b;
-    boolean c;
-}
-            \end{lstlisting}
-        Similar to the constructor for A in the previous section, there are $2 * 2 * 2 = 8$ different
-values an object of class SomeClass can have. Add another boolean, and you get 16 different
-values. Technically, a variable of type SomeClass can take one 8 + 1 different values, since
-null is also a valid value for all object variables in Java, but sometimes we ignore this fact
-and tell the users of our functions to kindly not pass in null as an argument where we expect
-an actual object.
-Now, to get sum types, we might use class hierarchies in Java:
-
-\begin{lstlisting}[language=Java]
-interface SomeType {}
-
-class A implements SomeType {
-    boolean a;
-    boolean b;
-    boolean c ;
-}
-class B implements SomeType {
-    boolean a;
-}
-class C implements SomeType {
-}
-
-\end{lstlisting}
-    Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
-    just like in the Haskell example above.
-        
         \subsection{Datastructures in memory}
         \subsubsection{Arrays}
         \subsubsection{Records}

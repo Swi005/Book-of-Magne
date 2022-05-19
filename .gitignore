@@ -11,3 +11,5 @@
 *.nav
 *.snm
 */_minted-Preamble*
+*.dvi
+*.vrb

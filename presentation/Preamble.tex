@@ -1,7 +1,7 @@
 \documentclass[aspectratio=169,fleqn,xcolor={dvipsnames}]{beamer}
 %Template by Lukas
 
-\usetheme[pageofpages=of]{hubln}
+\usetheme[pageofpages=of,titlepagelogo=UiBlogoMN_gray_m_Eng]{hubln}
 % dette dokumentet er hoveddokumentet og må kompileres
 % resten skjer i Preamble.tex
 
@@ -10,9 +10,10 @@
 \usepackage{geometry}
 \usepackage{amsmath}
 \usepackage{graphicx}
-\usepackage{listings}%For code do \begin{lstlisting}
+\usepackage{listings}
 \usepackage{color}
 \usepackage{tikz-cd}
+\usepackage{minted}
 \usepackage{float}
 \usepackage{glossaries}
 \usepackage{fancyhdr}
@@ -23,6 +24,11 @@
 \definecolor{bg}{RGB}{40, 40, 40}
 \setbeamercovered{invisible}
 \hfuzz=8.64pt % Antioverfullbox-inator
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \setbeamercolor{block body alerted}{bg=alerted text.fg!10}
 \setbeamercolor{block title alerted}{bg=alerted text.fg!20}
@@ -58,9 +64,10 @@
 
 % Hier die Daten zur Präsentation eintragen
 \author[ls]{Sander Wiig}
-\title[sgp]{Crashcourse INF222}
-\institute{Institutt for informatikk \\ Universitetet i Bergen}
-\date[\today]
+\title[sgp]{The Book of Magne}
+\subtitle{INF222 Crashcourse - v2022}
+\institute{Institute for Informatics \\ University of Bergen}
+\date[19.05.22]{19 Mai 2022}
 
 \begin{document}
   \input{Presentation}

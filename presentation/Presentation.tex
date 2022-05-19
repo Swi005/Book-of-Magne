@@ -1,6 +1,5 @@
-% Innholdet til selveste presentasjon
-
-% Titel page
+%Innholdet til selveste presentasjon
+%Titel page
 \begin{frame}[t,plain]
     \titlepage
 \end{frame}
@@ -13,7 +12,7 @@
 \begin{frame}
     %\tableofcontents
     
-    hvis den skal ha to spalter, gjør det utkommenterte her
+    %hvis den skal ha to spalter, gjør det utkommenterte her
     \begin{columns}[t]
         \begin{column}{.5\textwidth}
             \tableofcontents[sections={1-6}]
@@ -26,8 +25,8 @@
 
 % her kan du plassere en QR kode som lar folk laste ned filen (filene er i images folder)
 
-\subsection*{Download PDFen}
-\begin{frame}{Last meg ned}
+\subsection*{Download the PDF}
+\begin{frame}{Script and Presentation}
     \begin{figure}
         \centering
         \includegraphics[height = 4.9cm]{downloadqr.png}
@@ -42,6 +41,26 @@
 % i filen EksemplerLaTeX finner du eksempler for hvordan du lager slides
 % jeg har oversatt de viktigste til norsk, resten er en gammel tysk greie, men trenges ikke
 %\input{EksemplerLaTeX}
+\section{The Basics}
+\input{parts/Basics.tex}
+
+\section{AST \& Static Analysis}
+\input{parts/AST.tex}
+
+\section{State \& Scope}
+\input{parts/State.tex}
+
+\section{Procedures}
+\input{parts/Procedures.tex}
+
+\section{Generics}
+\input{parts/Generics.tex}
+
+\section{Language Standards}
+\input{parts/Standards.tex}
+
+\section{Misc}
+\input{parts/Misc.tex}
 
 % du kan lagre ut deler av presentasjonen i en ny fil og importere det med input, dersom du vil at ting er mer oversiktig i LaTeX dokumenten
 
