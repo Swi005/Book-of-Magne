@@ -1,0 +1,178 @@
+% Copyright 2007 by Marco Barisione
+%
+% This file may be distributed and/or modified
+%
+% 1. under the LaTeX Project Public License and/or
+% 2. under the GNU Public License.
+
+\mode<presentation>
+
+% String used between the current page and the total page count.
+\def\beamer@decolines@pageofpages{/}
+\DeclareOptionBeamer{pageofpages}{\def\beamer@decolines@pageofpages{#1}}
+
+% Show a line below the frame title.
+\DeclareOptionBeamer{titleline}[true]{\def\beamer@decolines@titleline{#1}}
+
+\newif\ifbeamer@sb@subsection
+
+\DeclareOptionBeamer{subsection}[true]{\csname beamer@sb@subsection#1\endcsname}
+
+\ExecuteOptionsBeamer{subsection=true,titleline=false}
+\ProcessOptionsBeamer
+
+% Colors.
+\setbeamercolor*{lineup}{parent=palette primary}
+\setbeamercolor*{linemid}{parent=palette secondary}
+\setbeamercolor*{linebottom}{parent=palette tertiary}
+\setbeamercolor*{page header}{parent=titlelike}
+
+\setbeamercolor{frametitle}{parent=palette primary}
+\setbeamercolor{subsection in head/foot}{parent=palette secondary}
+\setbeamercolor{section in head/foot}{parent=palette quaternary}
+
+% Lengths
+\newlength{\headerheight}
+\setlength{\headerheight}{.045\paperheight}
+\newlength{\beamer@decolines@lineup}
+\setlength{\beamer@decolines@lineup}{.025\paperheight}
+\newlength{\beamer@decolines@linemid}
+\setlength{\beamer@decolines@linemid}{.015\paperheight}
+\newlength{\beamer@decolines@linebottom}
+\setlength{\beamer@decolines@linebottom}{.01\paperheight}
+
+\beamer@compresstrue
+
+\AtBeginDocument{
+  {
+    \usebeamerfont*{headline}
+    \colorlet{global.bg}{bg}
+    \usebeamercolor{subsection in head/foot}
+    \usebeamercolor{section in head/foot}
+    \usebeamercolor{frametitle}
+
+    \ifbeamer@sb@subsection
+      \pgfdeclareverticalshading{beamer@barshade}{\the\paperwidth}{%
+         color(0ex)=(global.bg);%
+         color(0ex)=(subsection in head/foot.bg);%
+         color(4ex)=(subsection in head/foot.bg);%
+         color(4.25ex)=(section in head/foot.bg);%
+         color(9.75ex)=(section in head/foot.bg)%
+       }
+       \pgfdeclareverticalshading{beamer@aboveframetitle}{\the\paperwidth}{%
+         color(0ex)=(frametitle.bg);%
+         color(1ex)=(frametitle.bg);%
+         color(2ex)=(subsection in head/foot.bg)
+       }
+    \else
+      \pgfdeclareverticalshading{beamer@barshade}{\the\paperwidth}{%
+         color(0ex)=(global.bg);%
+         color(1ex)=(section in head/foot.bg);%
+         color(7ex)=(section in head/foot.bg)%
+       }
+     \pgfdeclareverticalshading{beamer@aboveframetitle}{\the\paperwidth}{%
+         color(0ex)=(frametitle.bg);%
+         color(1ex)=(frametitle.bg);%
+         color(2ex)=(section in head/foot.bg)
+       }
+    \fi  
+
+    \pgfdeclareverticalshading{beamer@belowframetitle}{\the\paperwidth}{%
+      color(0ex)=(global.bg);%
+      color(1ex)=(frametitle.bg)
+    }
+  }
+}
+
+% Please note: Die beiden hier mit "schmieriger Trick" gekennzeichneten Dateien sind Dateien, welche einen overfull hbox-Bug vermeintlich beheben. Hierdurch auftretende Folgefehler sind nicht bekannt
+
+% Footer.
+\defbeamertemplate*{footline}{decolines theme}
+{
+  \leavevmode%
+  % Page number.
+  \hbox{%
+  \begin{beamercolorbox}[wd=.2\paperwidth,ht=0ex,dp=0ex,center]{}%
+    \usebeamerfont{palette primary}\insertframenumber{} \beamer@decolines@pageofpages{} \inserttotalframenumber%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.8\paperwidth,ht=0ex,dp=0ex]{}%
+  \end{beamercolorbox}%
+  } %
+  % First line.
+   \vfill % Schmieriger Bugfix
+  \hbox{%
+  \begin{beamercolorbox}[wd=.2\paperwidth,ht=\beamer@decolines@lineup,dp=0pt]{}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.8\paperwidth,ht=\beamer@decolines@lineup,dp=0pt]{lineup}%
+  \end{beamercolorbox}%
+  } %
+  % Second line.
+   \vfill % Schmieriger Bugfix
+  \hbox{%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=\beamer@decolines@linemid,dp=0pt]{linemid}%
+  \end{beamercolorbox}%
+  } %
+  % Third line.
+  \hbox{%
+  \begin{beamercolorbox}[wd=.1\paperwidth,ht=\beamer@decolines@linebottom,dp=0pt]{}%
+  \end{beamercolorbox}%
+  \begin{beamercolorbox}[wd=.9\paperwidth,ht=\beamer@decolines@linebottom,dp=0pt]{linebottom}%
+  \end{beamercolorbox}%
+  }%
+}
+
+\defbeamertemplate*{headline}{decolines theme}
+{%
+  \pgfuseshading{beamer@barshade}%
+  \ifbeamer@sb@subsection%
+    \vskip-9.75ex%
+  \else%
+    \vskip-7ex%
+  \fi%
+  \begin{beamercolorbox}[ignorebg,ht=2.25ex,dp=3.75ex]{section in head/foot}
+    \insertnavigation{\paperwidth}
+  \end{beamercolorbox}%
+  \ifbeamer@sb@subsection%
+    \begin{beamercolorbox}[ignorebg,ht=2.125ex,dp=1.125ex,%
+      leftskip=.3cm,rightskip=.3cm plus1fil]{subsection in head/foot}
+      \usebeamerfont{subsection in head/foot}\insertsubsectionhead
+    \end{beamercolorbox}%
+  \fi%
+}%
+
+\defbeamertemplate*{frametitle}{decolines theme}[1][left]
+{
+  \ifbeamercolorempty[bg]{frametitle}{}{\nointerlineskip}%
+  \@tempdima=\textwidth%
+  \advance\@tempdima by\beamer@leftmargin%
+  \advance\@tempdima by\beamer@rightmargin%
+  \vbox{}\vskip-.5\beamer@leftmargin%
+  \begin{beamercolorbox}[sep=\beamer@leftmargin,#1,wd=\the\@tempdima]{}
+    \usebeamerfont{frametitle}\usebeamercolor[bg]{framesubtitle}%
+    \vbox{}\vskip0ex%
+    \if@tempswa\else\csname beamer@fte#1\endcsname\fi%
+    \strut\insertframetitle\strut\par%
+    {%
+      \ifx\insertframesubtitle\@empty%
+      \else%
+      {\usebeamerfont{framesubtitle}\usebeamercolor[bg]{framesubtitle}\insertframesubtitle\strut\par}%
+      \fi
+    }%
+    \vskip-1ex%
+    \if@tempswa\else\vskip-\beamer@leftmargin\fi
+  \end{beamercolorbox}%
+  \def\beamer@decolines@truetext{true}%
+  \ifx\beamer@decolines@titleline\beamer@decolines@truetext%
+    \vskip-.5\beamer@leftmargin%
+    \begin{beamercolorbox}[wd=\textwidth,ht=.1ex,dp=0ex]{linemid}%
+    \end{beamercolorbox}%
+  \fi
+}
+
+% Frame title continuations, default
+\defbeamertemplate*{frametitle continuation}{decolines theme}{(\insertcontinuationcount)}
+
+
+
+\mode
+<all>

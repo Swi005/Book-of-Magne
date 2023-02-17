@@ -1,0 +1,96 @@
+\documentclass[aspectratio=169,fleqn,xcolor={dvipsnames}]{beamer}
+%Template by Lukas
+
+\usetheme[pageofpages=of,titlepagelogo=UiBlogoMN_gray_m_Eng]{hubln}
+% dette dokumentet er hoveddokumentet og må kompileres
+% resten skjer i Preamble.tex
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage{tikz-cd}
+\usepackage{float}
+\usepackage{glossaries}
+\usepackage{fancyhdr}
+\usepackage{cleveref}
+\usepackage{epigraph}
+\usepackage{tikz}
+%\definecolor{bg}{HTML}{282828}
+\definecolor{bg}{RGB}{40, 40, 40}
+\setbeamercovered{invisible}
+\hfuzz=8.64pt % Antioverfullbox-inator
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\setbeamercolor{block body alerted}{bg=alerted text.fg!10}
+\setbeamercolor{block title alerted}{bg=alerted text.fg!20}
+\setbeamercolor{block body}{bg=structure!10}
+\setbeamercolor{block title}{bg=structure!20}
+\setbeamercolor{block body example}{bg=green!10}
+\setbeamercolor{block title example}{bg=green!20}
+\setbeamertemplate{blocks}[rounded][shadow]
+\graphicspath{ {assets/} }
+
+\lstset{frame=tb,
+  language=PASCAL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  backgroundcolor=\color{backcolour}, 
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\tikzset{onslide/.code args={<#1>#2}{% from https://tex.stackexchange.com/a/6155/263192
+  \only<#1>{\pgfkeysalso{#2}}
+}}
+
+\newcommand{\newLine}{%
+  \hfill\break
+}
+
+%\newcommand{\comment}[1]{}
+\tikzset{vertex/.style={draw, circle, inner sep=1mm}}
+\newcommand{\incomplete}[3][1.5cm]{\begin{tikzpicture}
+\foreach \n in {1,...,#2}{\node[vertex]at({90-360/#2*(\n-1)}:#1)(\n){\n};}
+\foreach \v/\w in {#3}{\draw(\v)--(\w);}
+\end{tikzpicture}}
+\tikzset{properties/.style={orange, ultra thick}}
+\tikzset{propertiesRed/.style={red, ultra thick}}
+\tikzset{propertiesBlue/.style={blue, ultra thick}}
+\tikzset{propertiesGrey/.style={gray, ultra thick}}
+
+\usepackage{mathtools}
+\DeclarePairedDelimiter\ceil{\lceil}{\rceil}
+\DeclarePairedDelimiter\floor{\lfloor}{\rfloor}
+
+% Hier die Daten zur Präsentation eintragen
+\author[ls]{Sander Wiig}
+\title[sgp]{The Book of Magne}
+\subtitle{INF222 Crashcourse - v2022}
+\institute{Institute for Informatics \\ University of Bergen}
+\date[20.02.23]{20 February 2023}
+
+\begin{document}
+  \input{Presentation}
+\end{document}

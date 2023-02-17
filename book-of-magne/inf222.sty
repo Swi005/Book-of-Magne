@@ -1,0 +1,260 @@
+% PDFLATEX
+% Setup for INF222 latex files
+% 2020-01-24
+%
+\usepackage{ucs}
+\usepackage[utf8x]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{a4wide}
+\usepackage{url}
+% Språk
+\usepackage{babel}
+% \usepackage[dvips]{graphics}
+% \usepackage[dvips]{epsfig}  %% for encapsulated postscript
+% \usepackage{boxedminipage}
+\usepackage{xcolor}
+\usepackage{graphicx}
+% \usepackage{epsfig}
+
+
+%%v For kodelisting
+% \usepackage{moreverb}
+\usepackage{listings}
+% \usepackage{listingsutf8}
+
+% Colouring scheme
+\definecolor{shadecolor}{gray}{0.95}
+\definecolor{gray}{gray}{0.55}
+\definecolor{idcolour}{rgb}{0.3,0.0,0.0}
+\definecolor{keywordcolour}{rgb}{0.5,0.0,0.5}
+\definecolor{commentcolour}{rgb}{0.3,0.5,0.3}
+\definecolor{stringcolour}{rgb}{0.35,0.3,0.2}
+\definecolor{emphcolour}{rgb}{0.3,0.0,0.0}
+\definecolor{code}{rgb}{0.0,0.0,0.3}
+\definecolor{static}{rgb}{0.0,0.0,0.3}
+\definecolor{highlight}{rgb}{1.0,0.0,0.3}
+% Other colour uses
+\definecolor{haskellwarning}{RGB}{211,56,211}
+
+% Unknown
+\lstdefinestyle{fig}{caption=,
+        numbers=left,
+}
+
+% Useful languages
+\lstloadlanguages{Java, Lisp, XML, Pascal, Haskell, C++, bash, ACMScript}
+\lstalias{EcmaScript}{ACMScript}
+
+% Language setup
+\lstset{%
+        extendedchars=true,
+        texcl=true,
+        backgroundcolor=\color{shadecolor},
+%       frame=lines,xrightmargin=3pt,xleftmargin=3pt,framexrightmargin=3pt,framexleftmargin=3pt,
+        tabsize=4,
+        fontadjust=true,
+        basewidth=0.5em,
+%       basicstyle=\ttfamily\small,
+      %  basicstyle=\small,
+      %  commentstyle=\small\itshape,
+      %  keywordstyle=\small\bfseries,
+  basicstyle=\small\color{idcolour},%\tt,%\small\ttfamily,% test: \color{red},
+  keywordstyle=\color{keywordcolour}\bf,%\underbar,%
+  commentstyle=\color{commentcolour}\sl,%\rmfamily\itshape\footnotesize,% alternate: commentstyle=\sl\color{black},
+  stringstyle=\color{stringcolour}\rm,%\itshape,%
+  emphstyle=\color{emph}\sl,%\slshape,%
+        showstringspaces=true,
+        columns=flexible,aboveskip=1\smallskipamount,belowskip=1\smallskipamount,
+        breaklines=true,
+        breakatwhitespace=true,
+        extendedchars=true,
+literate=%
+{æ}{{\ae}}1
+{ø}{{\o}}1
+{å}{{\aa}}1
+{Æ}{{\AE}}1
+{Ø}{{\O}}1
+{Å}{{\AA}}1
+{ε}{{$\epsilon$}}1
+{λ}{{$\lambda$}}1
+{Λ}{{$\Lambda$}}1
+{…}{{\ldots}}{2}
+{×}{{$\times$}}{1}
+{π}{{$\pi$}}{1}
+{→}{{$\to$}}{2}%
+{⊆}{{$\subseteq$}}{2}%
+{¢}{{\textsl{c\!\!|}}}{1}
+%{->}{{$\to$}}{2}%
+,%
+  %literate={->}{{\texttt{->}}}{2},%
+  % literate={\\\$}{\$}{1},%
+      %  inputencoding=utf8x,
+  numbers=none,                   % where to put the line-numbers: left none
+  numberstyle=\small\color{gray}, % the style that is used for the line-numbers
+  stepnumber=1,                   % the step between two line-numbers
+  numbersep=3pt,                  % how far the line-numbers are from the code
+}
+% \newcommand{\inputlisting}[1]{\lstinputlisting[style=fig,inputencoding=utf8/latin1,]{#1}}
+% \newcommand{\inputlisting}[1]{\lstinputlisting{#1}}
+
+% Ralph Lämmel languages
+%% RLESL extended signature language
+\lstdefinelanguage{RLESL}{%
+  keywords={%
+    type,symbol,%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+}[keywords,comments,strings]%
+%% RLBIPL basic imperative programming language
+\lstdefinelanguage{RLBIPL}{%
+  keywords={%
+    type,if,then,else,while,%
+    parameters,in,out,%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+  % literate={\\\$}{\$}{1},%
+}[keywords,comments,strings]%
+%% RLBTL basic TAPL language
+\lstdefinelanguage{RLBTL}{%
+  keywords={%
+    NONE,%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+  % literate={\\\$}{\$}{1},%
+}[keywords,comments,strings]%
+
+% Other languages
+%% BNF 
+\lstdefinelanguage{BNF}{%
+  keywords={%
+    type,symbol,%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+}[keywords,comments,strings]%
+%% Missing Java keywords
+\lstdefinelanguage{BNF}{%
+  keywords={%
+    assert,%
+  },%
+}%[keywords,comments,strings]%
+%% DIPL scoping imperative programming language
+\lstdefinelanguage{DIPL}{%
+  keywords={%
+    type,if,then,else,while,%
+    parameters,in,out,obs,upd,out,%
+    var,write,proc,begin,end,%
+    procedure,call,%
+    assert%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+  % literate={\\\$}{\$}{1},%
+}[keywords,comments,strings]%
+%% SIPL scoping imperative programming language
+\lstdefinelanguage{SIPL}{%
+  keywords={%
+    type,if,then,else,while,%
+    parameters,in,out,%
+    var,write,proc,begin,end,%
+    procedure,call%
+  },%
+  sensitive=true,%
+  morecomment=[s]{/*}{*/},%
+  morecomment=[l]//,% nonstandard
+  morestring=[b]",%
+  % literate={\\\$}{\$}{1},%
+}[keywords,comments,strings]%
+
+
+% For inline codelisting
+\newcommand{\lhaskell}[1]{\lstset{language=Haskell,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lbash}[1]{\lstset{language=Bash,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lcpp}[1]{\lstset{language=C++,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\ljava}[1]{\lstset{language=Java,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lpascal}[1]{\lstset{language=Pascal,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lrlesl}[1]{\lstset{language=RLESL,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lrlbipl}[1]{\lstset{language=RLBIPL,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lrlbtl}[1]{\lstset{language=RLBTL,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lbnf}[1]{\lstset{language=BNF,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\ldipl}[1]{\lstset{language=DIPL,}\colorbox{shadecolor}{\lstinline{#1}}}
+\newcommand{\lsipl}[1]{\lstset{language=SIPL,}\colorbox{shadecolor}{\lstinline{#1}}}
+
+\newlength{\measurel}
+\newlength{\lineroom}
+\newenvironment{bfigure}[1][tbhp]{\begin{figure}[#1]
+        \renewcommand{\fcaption}{\caption}%
+        \setlength{\lineroom}{\linewidth}\addtolength{\lineroom}{-1.2em}%
+%       \begin{tabular}{|c|}\hline\\[0ex]%
+        \begin{tabular}{c}\rule{0pt}{0pt}\\[0pt]%
+        \begin{minipage}{\lineroom}%
+        }{%
+    \end{minipage}\\*[-0.5em]~\\%\hline%
+    \end{tabular}%
+    \end{figure}}
+%    {\end{minipage}\\~\\\hline\end{tabular}\end{figure}}
+\newcommand{\fcaption}{}
+\newenvironment{bfigure*}[1]{\begin{example}}%
+    {\end{example}}
+\newcommand{\progfont}{\tt\small}
+\newcommand{\prog}[1]{\texttt{#1}}
+\newenvironment{program*}{\begin{quote}\progfont\obeylines\obeyspaces}{\end{quote}}
+% \newenvironment{program}{\setlength{\lineroom}{\linewidth}%
+%       \addtolength{\lineroom}{-5em}%
+%       \begin{eqnarray}\hspace*{2.85em}\begin{minipage}{\lineroom}%
+%       \progfont\obeylines\obeyspaces}%
+%     {\end{minipage}\end{eqnarray}\noindent}
+%\newcommand\vect[1]{\ensuremath{\stackrel{\ar}{#1}}}
+\newcommand\verbatimlist[1]{\centerline{\fbox{File to be prepared: #1}}}
+% \usepackage{latexsym}
+% \usepackage{amsmath}
+\newcommand{\name}[1]{\ensuremath{\mathop{\rm #1}}}
+\newcommand{\sff}{\ensuremath{\mathop{\rm sff}}}
+
+\usepackage{multirow}
+
+% Stuff used in notes but not in assignments
+% \usepackage{grffile}
+% \usepackage{longtable}
+% \usepackage{wrapfig}
+% \usepackage{rotating}
+% \usepackage[normalem]{ulem}
+\usepackage{amsmath}
+% \usepackage{textcomp}
+\usepackage{amssymb}
+% \usepackage{capt-of}
+\usepackage{hyperref}
+% \usepackage{minted}
+% \usepackage{tikz}
+
+% Math symbols
+\newcommand{\tuple}[1]{\langle #1 \rangle}
+
+%% Formal scientific properties.
+\newtheorem{theorem}{Theorem}[section]
+\newenvironment{proof}{\noindent \bf Proof \rm}{
+ {\unskip\nobreak\hfill\ $\Box$ \par \medbreak}}
+\newtheorem{Exampleastheorem}[theorem]{Example}
+\newenvironment{example}{\begin{Exampleastheorem}\rm}%
+        {\unskip\nobreak\hfill\ $\Box$\end{Exampleastheorem}}
+\newtheorem{Definitionastheorem}[theorem]{Definition}
+\newenvironment{definition}{\begin{Definitionastheorem}\rm}%
+        {\unskip\nobreak\hfill\ $\Box$\end{Definitionastheorem}}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{fact}[theorem]{Fact}
+\newtheorem{corollary}[theorem]{Corollary}
+
