@@ -1,4 +1,5 @@
 #My latex compiler generates a bunch of extra files. Added a .gitignore so they dont get added. 
+/.vscode/
 *.aux
 *.fdb_latexmk
 *.fls
@@ -13,3 +14,4 @@
 */_minted-Preamble*
 *.dvi
 *.vrb
+*.pyg
