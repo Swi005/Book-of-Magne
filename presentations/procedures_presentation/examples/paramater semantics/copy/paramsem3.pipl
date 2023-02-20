@@ -1,0 +1,12 @@
+procedure GroupSwap (upd x: integer, upd y :integer) 
+begin
+    y := x + y;// a = a + a = 5+5 => a = 10
+    x := y - x;// a = a - a = 10 - 10 => a = 0
+    y := y - x;// a = a - a = 0 - 0 => a = 0
+end; 
+
+procedure SelfSwap();
+begin
+    var a = 5;
+    call GroupSwap (a, a); //x =a, y = a
+end;
