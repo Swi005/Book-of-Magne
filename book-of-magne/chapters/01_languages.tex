@@ -1,0 +1,64 @@
+\section{What is a language}
+\subsection{What is a programming language}
+    A programming language 
+    \begin{itemize}
+        \item is an artifical language(i.e made by us humans on purpose)
+        \item used to tell machines what to do
+    \end{itemize}
+    More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer can follow.
+    This is of course a very general description and it, therefore, follows that there are many different types of programming languages.
+    IT therefore should come as little surprise that we group languages by features and properties. 
+    \subsubsection{Types of languages}
+    There are many ways of grouping languages. They can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
+    For now, we're going to group them by paradigm, and Generality vs. Specificity.
+    \subsubsection*{Generality vs. Specificity}
+    Languages are usually grouped into two categories when based on their specificity.
+    \begin{itemize}
+        \item DSL
+        \item GPL
+    \end{itemize}
+
+    \Gls{DSL} are as the name suggests languages with a "specific" domain.\\
+    DSLs usually have limited scope and use. Examples are JSON and SQL.     
+    A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
+    Optimized for a certain problem/domain. 
+    DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)
+
+    \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
+    These languages have a wide array
+    of uses and are usually what we think of when we hear the words programming language. Examples of GPLs are Java and Haskell.\\
+    \begin{figure*}[!h]
+        \begin{tabular}{|c|c|c}
+            \hline
+            \textbf{Characteristic} &\textbf{DSL vs. GPL}\\
+            \hline
+            \textbf{Domain} & DSLs have a small and well-defined domain\\
+            \hline
+            \textbf{Size} &GPLs are large, DSLs are usually small\\
+            \hline
+            \textbf{Lifespan} &GPLs last for years to decades, DSLs typicaly live for shorter periors.\\
+            \hline
+        \end{tabular}%
+        \caption{Some more comparisons between GPLs and DSLs}
+    \end{figure*}%
+
+    \subsubsection*{Paradigm}
+    We can also classify languages by programming paradigm, some of these are; 
+    \begin{itemize}
+        \item Imperative Languages, i.e C
+        \item Functional Languages, i.e Haskell
+        \item Object-oriented Languages, i.e Java, C\#, C++
+        \item Logic Languages
+    \end{itemize}
+    \comment{Write something about this also}
+    \comment{Write body}
+
+    \subsubsection*{Syntax and Semantics}
+    All programming languages have two parts; the \gls{syntax}, and the \gls{semantics}.\\
+    Syntax is the study of \textit{structure}, just as semantics is the study of \textit{meaning}. Or in other words
+    the syntax tells us \textit{how} to write legal programs, the semantics tells us \textit{what} those programs do. 
+
+    \subsection{Meta Programming}
+    One of the harder things in the course is \gls{meta-programming}. INF222 is usually the first time you've encountered meta-programming and it can be hard a hard concept to grasp. 
+    Meta-programming is programming \textit{about} programming. More properly meta-programms treat other programms as data. When you see a datastructure like \gls{BSL} or \gls{BIPL} in Haskell it
+    represents a program.

@@ -1,0 +1,45 @@
+{
+\newglossaryentry{DSL}{name={\textbf{Domain Specific Languages}},description={
+        A language(i.e not just a library) with abstractions targetet at a specific problem domain.
+        \begin{itemize}
+            \item \textit{External DSL} - A DSL defined as a seperate programming language.
+            \item \textit{Internal/Embedded DSL} - A DSL defined as a language-like interface to a library.
+        \end{itemize} 
+    }}
+\newglossaryentry{GPL}{name={\textbf{General Purpose Languages}},description={
+    A language suited for a wide variety of problems and situations but lacks specialized features to deal with specific programs like a DSL.
+}}
+\newglossaryentry{syntax}{name={\textbf{Syntax}},description={Syntax refers to the rules that define the structure of a language. 
+                                                    Syntax in computer programming means the rules that control the structure of the symbols, 
+                                                    punctuation, and words of a programming language.}}
+
+\newglossaryentry{semantics}{name={\textbf{Semantics}},description={The semantics of a program concerns the meaning of the program. i.e what it actually does. 
+                                                            It can take many forms, sometimes we're only interested in the result of the program.
+                                                            Other cases concern the steps taken by the program to reach said output.}}
+\newglossaryentry{interpreter}{name={\textbf{Interpreter}},description={An interpreter is a program that directly executes instructions written in a programming language.}}
+\newglossaryentry{compiler}{name={\textbf{Compiler}},description={A compiler is a program that translates computer code(\textit{the source language}) into another language(\textit{the target language})
+                                                                Compilers usually convert some high level language to some lower level language.}}
+\newglossaryentry{AST}{name={\textbf{Abstract Syntax Tree}},description={An Abstract Syntax Tree(AST) is a tree representation of the syntactic structure of our program. 
+                                                                Can be represented by using trees or terms, and described by an algebraic data type or regular tree grammar.}}
+\newglossaryentry{meta-programming}{name={\textbf{Meta-Programming}},description={Metaprogramming is a programming technique in which computer programs have the ability to treat other programs as their data. 
+                                        It means that a program can be designed to read, generate, analyze or transform other programs, and even modify itself while running.}}
+\newglossaryentry{BSL}{name={\textbf{Basic Signature Language}},description={Simple language to illustrate signatures}}
+\newglossaryentry{BIPL}{name={\textbf{Basic Imperative Programing Language}},description={BIPL is a trivial language to explain basic imperative programming concepts like mutable vars, assignments, control-flow, loops, and iteration}}
+\newglossaryentry{expression}{name={\textbf{Expression}},description={An expression is a syntactic construct that can be evaluated in order to obtain its value. The resulting value is usually one of the program's types.}}
+\newglossaryentry{wellformed}{name={\textbf{Wellformed}},description={Wellformedness is when a program is following all the rules. smileemoji}}
+\newglossaryentry{store}{name={\textbf{Store}},description={Program memory, byte/value array, grows uppwards.}}
+\newglossaryentry{env}{name={\textbf{Enviroment}},description={Map describing where things are located in the \gls{store}. Kinda like a phonebook}}
+\newglossaryentry{scope}{name={\textbf{Scope}},description={A collection of identifier bindings . i,e what's captured by the eniroment at some point in the code.}}
+\newglossaryentry{param}{name={\textbf{Parameter}},description={A parameter is a localvariable that is initialized with the arguments. Also often contains how those args are to be treated.}}
+\newglossaryentry{local var}{name={\textbf{Local Variable}},description={A local variable is a variable that only exists within a limited scope.}}
+\newglossaryentry{stackframe}{name={\textbf{Stackframe}},description={The stackframe is a snapshot of how the program enviroment looks at a certain point in time. 
+                                                                        The stackframe saves things that could be changed by running the procedure and lets us restore the program
+                                                                        to the previous state without all the changes made by the procedure.}}
+\newglossaryentry{argument}{name={\textbf{Argument}},description={An argument is a value provided to the procedure when it is run. When the procedure is run the parameters of the procedure is initialized with its corresponding argument.}}
+\newglossaryentry{copy sem}{name={\textbf{Copy Semantics}},description={Type of argument passing where the parameters are initialized with the value of the arguments}}
+\newglossaryentry{ref sem}{name={\textbf{Reference Semantics}},description={Type of argument passing where the parameters point to the the address as the argument.}}
+\newglossaryentry{SLE}{name={\textbf{Software Language Engineering}},description={Software Language Engineering is the scientific field that researches language development, and mainteinace of formal descriptios, and tooling of software lanugages}}
+\newglossaryentry{BNF}{name={\textbf{Backus-Naur Form}},description={Formal notation for describing grammars. Used to describe the syntax of a language.}}
+\newglossaryentry{sum of prod}{name={\textbf{Sum of Products}},description={}}
+}
+\makenoidxglossaries
