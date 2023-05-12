@@ -1,17 +1,20 @@
-\section{What is a language}
-\subsection{What is a programming language}
+\chapter{What is a language}
+\section{What is a programming language}
     A programming language 
     \begin{itemize}
-        \item is an artifical language(i.e made by us humans on purpose)
+        \item is an artificial language(i.e made by us humans on purpose)
         \item used to tell machines what to do
     \end{itemize}
     More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer can follow.
     This is of course a very general description and it, therefore, follows that there are many different types of programming languages.
     IT therefore should come as little surprise that we group languages by features and properties. 
-    \subsubsection{Types of languages}
+    \cite{anya:2016}
+
+    \subsection*{Types of languages}
     There are many ways of grouping languages. They can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
     For now, we're going to group them by paradigm, and Generality vs. Specificity.
-    \subsubsection*{Generality vs. Specificity}
+
+    \subsection*{Generality vs. Specificity}
     Languages are usually grouped into two categories when based on their specificity.
     \begin{itemize}
         \item DSL
@@ -22,43 +25,108 @@
     DSLs usually have limited scope and use. Examples are JSON and SQL.     
     A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
     Optimized for a certain problem/domain. 
-    DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)
+    DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)\\
+
 
     \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
     These languages have a wide array
     of uses and are usually what we think of when we hear the words programming language. Examples of GPLs are Java and Haskell.\\
+    
     \begin{figure*}[!h]
-        \begin{tabular}{|c|c|c}
+        \begin{tabular}{|c|c|c|c|}
             \hline
-            \textbf{Characteristic} &\textbf{DSL vs. GPL}\\
+            \textbf{Characteristic} &\textbf{DSL } &\textbf{GPL}\\
             \hline
-            \textbf{Domain} & DSLs have a small and well-defined domain\\
+            \textbf{Domain} & Small and well-defined domain & Generality, many use cases\\
             \hline
-            \textbf{Size} &GPLs are large, DSLs are usually small\\
+            \textbf{Size} &Small ASTs & Large ASTs, often user extensible\\
             \hline
-            \textbf{Lifespan} &GPLs last for years to decades, DSLs typicaly live for shorter periors.\\
+            \textbf{Lifespan} &As long as their domain &years to decades\\
+            \hline
+            \textbf{Extensibility} &Usually not extensible by users & Provides mechanisms for extensibility\\
             \hline
         \end{tabular}%
-        \caption{Some more comparisons between GPLs and DSLs}
+        \caption{Some more comparisons between GPLs and DSLs\cite{lammel:2018}}
     \end{figure*}%
 
-    \subsubsection*{Paradigm}
-    We can also classify languages by programming paradigm, some of these are; 
-    \begin{itemize}
-        \item Imperative Languages, i.e C
-        \item Functional Languages, i.e Haskell
-        \item Object-oriented Languages, i.e Java, C\#, C++
-        \item Logic Languages
-    \end{itemize}
-    \comment{Write something about this also}
-    \comment{Write body}
-
-    \subsubsection*{Syntax and Semantics}
+    \subsection*{Syntax and Semantics}
     All programming languages have two parts; the \gls{syntax}, and the \gls{semantics}.\\
-    Syntax is the study of \textit{structure}, just as semantics is the study of \textit{meaning}. Or in other words
-    the syntax tells us \textit{how} to write legal programs, the semantics tells us \textit{what} those programs do. 
+    Syntax is the study of \textit{structure}, just as semantics is the study of \textit{meaning}. 
+    Or in other words, the syntax tells us \textit{how} to write legal programs, and the semantics tells us \textit{what} those programs do. 
 
-    \subsection{Meta Programming}
+    \section{Meta Programming}
     One of the harder things in the course is \gls{meta-programming}. INF222 is usually the first time you've encountered meta-programming and it can be hard a hard concept to grasp. 
-    Meta-programming is programming \textit{about} programming. More properly meta-programms treat other programms as data. When you see a datastructure like \gls{BSL} or \gls{BIPL} in Haskell it
+    Meta-programming is programming \textit{about} programming. More properly meta-programs treat other programs as data. When you see a data structure like \gls{BTL} or \gls{BIPL} in Haskell it
     represents a program.
+
+
+    \section{Sum of products}
+        You may have encountered the term \gls{Sum of Products}, lets's quickly run over why we use the terms \textit{sum} and \textit{product} 
+        to describe the data types, and show some examples in both Haskell and Java.
+
+        \subsection*{Haskell}
+            \begin{lstlisting}[language=Haskell]
+data SomeType = A Bool Bool Bool
+                | B Bool
+                | C
+            \end{lstlisting}
+            Here the type SomeType has 3 constructors, A, B, and C, where A takes 3 parameters, B takes one, and C zero. 
+            The type of SomeType could be expressed algebraically as
+            \begin{align*}
+                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}_{A} + \underbrace{\text{Bool}}_{B} + \underbrace{1}_{C}
+            \end{align*}
+            The Bool type can take on 2 different values
+            ( False and True ), so the constructor
+            can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
+            make from 3 booleans (e.g. A True False False is one example). The constructor B can
+            produce 2 different values, and C can only produce one (not zero!).
+            Thus, the total numbers of values of type SomeType is $8 + 2 + 1 = 11$, as the data type
+            is the sum of the three products we've just described.\\
+            In short, a sum type denotes “one of” its constituent types (if your function takes SomeType
+            as input, it will get either (A b1 b2 b3 ), (B b1) or C for some boolean values b1 . . .), while
+            a product type denotes “all of” its constituent types (e.g. a value constructed with A will
+            have all 3 booleans present.) Another way to express a product type in Haskell is with tuples,
+            e.g.
+            \begin{lstlisting}[language=Haskell]
+type MyTriple = (Bool, Int, Char)
+            \end{lstlisting}
+
+            \subsection*{Java}
+            In Java, we can model the same kind of data types using classes and inheritance. The instance
+            variables of a class determine a “product” type, e.g.
+
+            \begin{lstlisting}[language=Java]
+class SomeClass {
+    boolean a;
+    boolean b;
+    boolean c;
+}
+            \end{lstlisting}
+    Similar to the constructor for A in the previous section, there are $2 * 2 * 2 = 8$ different
+    values an object of class SomeClass can have. Add another boolean, and you get 16 different
+    values. Technically, a variable of type SomeClass can take one 8 + 1 different values, since
+    null is also a valid value for all object variables in Java, but sometimes we ignore this fact
+    and tell the users of our functions to kindly not pass in null as an argument where we expect
+    an actual object.
+    Now, to get sum types, we might use class hierarchies in Java:
+
+    \begin{figure}[!h]
+        \centering
+        \begin{lstlisting}[language=Java]
+interface SomeType {}
+
+class A implements SomeType {
+    boolean a;
+    boolean b;
+    boolean c ;
+}
+class B implements SomeType {
+    boolean a;
+}
+class C implements SomeType {
+}
+        \end{lstlisting}
+    \end{figure}
+
+    Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
+    just like in the Haskell example above.

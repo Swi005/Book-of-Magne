@@ -1,7 +1,8 @@
-\documentclass[tikz, border=5mm]{article}
+\documentclass[tikz, border=5mm]{book}
 
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{blindtext}
 \usepackage{graphicx}
 \usepackage{listings}%For code do \begin{lstlisting}
 \usepackage{color}
@@ -19,6 +20,25 @@
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 \definecolor{mauve}{rgb}{0.58,0,0.82}
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstset{frame=tb,
+  language=PASCAL,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\bibliographystyle{plain}
 
 \DeclareRobustCommand{\comment}[1]{
     {\color{orange}\emph{#1}}
@@ -61,4 +81,5 @@
     \include{chapters/06_mdcs.tex}
     \newpage
 
+    \bibliography{main}
 \end{document}
