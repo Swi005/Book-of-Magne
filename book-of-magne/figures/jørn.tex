@@ -1,0 +1,43 @@
+\newcounter{address}
+\newcommand\StateDiagram[4]{
+\begin{tikzpicture}[>=Stealth, start chain=a, start chain=b, node distance=0,
+  box/.style={draw, on chain=##1, minimum width=15mm, minimum height=6mm},
+  label/.style={thick,minimum width=2cm,fill=blue!20}]
+  \begin{scope}[local bounding box=store]
+  \node [box=a,label] (a) {Address};
+  \node [box=a] {$\cdots$};
+
+  \ifnum#1>99\relax\else
+  \foreach \x in {#1,...,99}
+  {
+    \node [box=a] (addr_\x) {\x};
+  }
+  \fi
+  \node [box=b,below=of a,label] {Value} ;
+  \node [box=b] {$\cdots$} ;
+  \setcounter{address}{#1}
+  \foreach \x in {#3}
+  {
+    \node [box=b] (mem_\theaddress) {\x};
+    \stepcounter{address}
+  }
+  \node [above=of addr_#2,yshift=5mm] (freelabel) { free } ;
+  \draw [->] (freelabel) -- (addr_#2.north) ;
+  \end{scope}
+  \node [left=of a, anchor=north east] {Store};
+  \begin{scope}[start chain=c, start chain=d,shift={($(store.south)-(0,1cm)$)}]
+    \node [box=c,label] (c) {Variable} ;
+    % varname, addr
+    \foreach \x/\y in {#4}
+    {
+      \node [box=c] (var_\x) {\x};
+    }
+    \node [box=d,below=of c,label] {Address} ;
+    \foreach \x/\y in {#4}
+    {
+      \node [box=d] {\y};
+    }
+  \end{scope}
+  \node [left=of c, anchor=north east] {Environment};
+\end{tikzpicture}
+}
