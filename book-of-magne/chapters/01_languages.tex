@@ -8,7 +8,6 @@
     More formally a programming language is a set of rules that converts some input, like strings, into instructions that the computer can follow.
     This is of course a very general description and it, therefore, follows that there are many different types of programming languages.
     IT therefore should come as little surprise that we group languages by features and properties. 
-    \cite{anya:2016}
 
     \subsection*{Types of languages}
     There are many ways of grouping languages. They can be grouped by Purpose, typing, paradigm, Generality vs. Specificity, and many more.
@@ -33,6 +32,7 @@
     of uses and are usually what we think of when we hear the words programming language. Examples of GPLs are Java and Haskell.\\
     
     \begin{figure*}[!h]
+        \centering
         \begin{tabular}{|c|c|c|c|}
             \hline
             \textbf{Characteristic} &\textbf{DSL } &\textbf{GPL}\\
@@ -46,7 +46,7 @@
             \textbf{Extensibility} &Usually not extensible by users & Provides mechanisms for extensibility\\
             \hline
         \end{tabular}%
-        \caption{Some more comparisons between GPLs and DSLs\cite{lammel:2018}}
+        \caption{Comparison between GPLs and DSLs}
     \end{figure*}%
 
     \subsection*{Syntax and Semantics}
@@ -58,7 +58,7 @@
     One of the harder things in the course is \gls{meta-programming}. INF222 is usually the first time you've encountered meta-programming and it can be hard a hard concept to grasp. 
     Meta-programming is programming \textit{about} programming. More properly meta-programs treat other programs as data. When you see a data structure like \gls{BTL} or \gls{BIPL} in Haskell it
     represents a program.
-
+    \comment{TODO:Talk about meta languages, Object languages, and classify BTL, BIPL, and PIPL as DSL or GPL}
 
     \section{Sum of products}
         You may have encountered the term \gls{Sum of Products}, lets's quickly run over why we use the terms \textit{sum} and \textit{product} 
@@ -80,7 +80,7 @@ data SomeType = A Bool Bool Bool
             can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
             make from 3 booleans (e.g. A True False False is one example). The constructor B can
             produce 2 different values, and C can only produce one (not zero!).
-            Thus, the total numbers of values of type SomeType is $8 + 2 + 1 = 11$, as the data type
+            Thus, the total number of values of type SomeType is $8 + 2 + 1 = 11$, as the data type
             is the sum of the three products we've just described.\\
             In short, a sum type denotes “one of” its constituent types (if your function takes SomeType
             as input, it will get either (A b1 b2 b3 ), (B b1) or C for some boolean values b1 . . .), while
@@ -110,9 +110,7 @@ class SomeClass {
     an actual object.
     Now, to get sum types, we might use class hierarchies in Java:
 
-    \begin{figure}[!h]
-        \centering
-        \begin{lstlisting}[language=Java]
+    \begin{lstlisting}[language=Java]
 interface SomeType {}
 
 class A implements SomeType {
@@ -125,8 +123,7 @@ class B implements SomeType {
 }
 class C implements SomeType {
 }
-        \end{lstlisting}
-    \end{figure}
-
-    Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
+    \end{lstlisting}
+    Now, an object of type SomeType can (ignoring null) have $8 + 2 + 1$ different values,
     just like in the Haskell example above.
+

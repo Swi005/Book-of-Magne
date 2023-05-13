@@ -1,7 +1,8 @@
-\documentclass[tikz, border=5mm]{book}
+\documentclass[tikz, border=5mm, a4paper]{book}
 
 \usepackage{geometry}
 \usepackage{amsmath}
+\usepackage{hyperref}
 \usepackage{blindtext}
 \usepackage{graphicx}
 \usepackage{listings}%For code do \begin{lstlisting}
@@ -13,6 +14,10 @@
 \usepackage{fancyhdr}
 \usepackage{cleveref}
 \usepackage{epigraph}
+\usepackage{bytefield}
+\usepackage{etoolbox}
+
+
 \usetikzlibrary{arrows, arrows.meta, backgrounds, shapes, automata, petri, positioning, calc, chains, decorations.pathmorphing, fit, decorations.pathreplacing}
 
 
@@ -22,7 +27,6 @@
 \definecolor{backcolour}{rgb}{0.95,0.95,0.92}
 
 \lstset{frame=tb,
-  language=PASCAL,
   aboveskip=3mm,
   belowskip=3mm,
   showstringspaces=false,
@@ -40,45 +44,75 @@
 
 \bibliographystyle{plain}
 
+\makeatletter
+\patchcmd{\chapter}{\if@openright\cleardoublepage\else\clearpage\fi}{}{}{}
+\makeatother
+
 \DeclareRobustCommand{\comment}[1]{
     {\color{orange}\emph{#1}}
 }
-\pagestyle{fancy}
-\fancyhf{}
-\rhead{\rightmark}
-\lhead{\leftmark}
-\rfoot{\thepage}
 
-\include{chapters/glossary.tex}
+
+\input{chapters/glossary.tex}
+\input{figures/jørn.tex}
+
+\newcommand{\descbox}[2]{\parbox[c][3.8\baselineskip]{0.95\width}{%
+    % facilitates the creation of memory maps. Start address at the bottom,
+    % end address at the top.
+    % syntax:
+    % \memsection{end address}{start address}{height in lines}{text in box}
+}}
+\newcommand{\memsection}[4]{%
+  % define the height of the memsection
+  \bytefieldsetup{bitheight=#3\baselineskip}%
+  \bitbox[]{10}{%
+    \texttt{#1}% print end address
+    \\
+    % do some spacing
+    \vspace{#3\baselineskip}
+    \vspace{-2\baselineskip}
+    \vspace{-#3pt}
+    \texttt{#2}% print start address
+  }%
+  \bitbox{16}{#4}% print box with caption
+}
+
 %
 \begin{document}
-    %Frontpage
-    \include{chapters/frontpage.tex}
 
+    \pagestyle{fancy}
+    \fancyhead{}
+    \rhead{\rightmark}
+    \lhead{\leftmark}
+    \fancyfoot{}
+    \fancyfoot[LO,RE]{\thepage}
+    
+    %Frontpage 
+    \input{chapters/frontpage.tex}
     \newpage
+    
     \tableofcontents
     \newpage
-
-    \include{chapters/00_preface.tex}
-    \newpage
-
-    \include{chapters/01_languages.tex}
-
-    \newpage
-
-    \include{chapters/02_anatomy.tex}
-    \newpage
-
-    \include{chapters/03_store_state_storage.tex}
+    
+    \input{chapters/00_preface.tex}
     \newpage
     
-    \include{chapters/04_procedures.tex}
-    \newpage
-
-    \include{chapters/05_signatures.tex}
+    \input{chapters/01_languages.tex}
     \newpage
     
-    \include{chapters/06_mdcs.tex}
+    \input{chapters/02_anatomy.tex}
+    \newpage
+    
+    \input{chapters/03_store_state_storage.tex}
+    \newpage
+    
+    \input{chapters/04_procedures.tex}
+    \newpage
+
+    \input{chapters/05_signatures.tex}
+    \newpage
+
+    \input{chapters/06_mdcs.tex}
     \newpage
 
     \bibliography{main}

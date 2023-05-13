@@ -1,0 +1,146 @@
+\chapter{Store, State, and Storage}
+
+\section{State}
+\label{sec:state}
+\subsection{Store}
+\label{subsec:store}
+When running a program we often want to remember intermediary values or have variables. For us to do this we need some way of storing values.
+To do this we create a \gls{store}. A store is very simply an array, usually containing either bytes or ValueTypes. 
+The store is the program's memory(this is true in C). To access a value located at $i$ in our store we simply access the value at array index $i$.
+Worth noting that the store is what we call the program heap and by tradition, it grows upwards. This means that new entries are stored at the highest available index in our store.
+This is because the stack grows upwards and gives us the best possible use of the memory.
+
+\subsection{Variables and Enviroment}
+\label{subsec:vars}
+We now have a place to store stuff, but how do we know where it is in the store? This is where \glspl{env} comes into play.\\
+An environment is a map between variables and their location in the store. \\
+\comment{Elaborate more about variables as name bindings.}
+\section{Scoping}
+\label{sec:scope}
+\comment{TODO: Rewrite scoping section}
+%Explain scope
+
+Most variables are not visible to the entire program.
+In previous courses, you have in all likelihood encountered global and local variables when programming.
+Where global variables are variables that are visible to the entire program, and local variables are variables that are only visible to the method or function that they were declared in.
+
+The term for where a variable is visible is called the \gls{scope} of a variable.
+Variable scoping is useful because it lets us keep variables in different parts of our programs separate.
+If you were to write a calculator it would be somewhat awkward if you could only use \texttt{x} and \texttt{y} once.\\
+\newline
+Scope can also apply to more than just variables, and all declarations usually have scope.
+
+Most languages generally use one of three classes of scoping, and these can have wildly different effects on a program's semantics:
+
+\begin{itemize}
+    \item \textbf{Runtime Scoping} - In Runtime Scoping the variable that is in scope is determined by the execution of the program and is the variable that was last seen.
+                                    Runtime scoping makes no difference between declaration and usage.                           
+                                    Variables are declared, initialized, and updated as the interpreter proceeds with the code. 
+                                    Depending on the code's branching structure, a variable may or may not be declared.
+                                    This means that a variable's scope is often the entire program.
+                                    
+    \item \textbf{Static Scoping} - In Static Scoping the variable that is in scope is determined by the structure of the program. 
+                                    This means that the variable that is in scope is the variable that was declared in the closest enclosing scope.
+                                    A variable's scope is often just the block where it was declared.
+                                    Static scoping is easy to reason about and is the most common form of scoping used today.
+    \item \textbf{Dynamic Scoping} - In dynamic scoping the scope of a variable is determined by the usage context, instead of its declaration.
+                                    Dynamic scoping is often hard to reason about since a variable has to be reasoned about in every usage context.
+                                    Dynamic scoping is therefore not used very often.                      
+\end{itemize}
+
+To better illustrate the differences let's take a look at an example!
+
+\begin{figure}[!h]
+    \centering
+    \lstinputlisting[language=c]{figures/code/scoping.c}  
+    \caption{Scoping Example}
+    \label{fig:scoping}
+\end{figure}
+
+\subsection*{Runtime Scoping}
+If we execute the program with runtime-scoping the program will return 20. 
+This is because the variable \texttt{x} is first declared in line 3, but is then overridden in \texttt{g()} on line 5.
+When we call \texttt{g()} on line 9, the variable \texttt{x} is set to 20, and this is then returned by \texttt{f()}.
+
+\subsection*{Static Scoping}
+If we execute the program with static scoping the program will return 10.
+This is because the variable \texttt{x} is first declared on line 3, before being shadowed in \texttt{g()}, but because \texttt{x} is only 20 within \texttt{g()}, the \texttt{x} in \texttt{f()} is still the same as it was on line 3.
+
+\subsection*{Dynamic Scoping}
+The result of executing the program with dynamic scoping is 20 because the variable \texttt{x} is set to 20 in \texttt{g()} and \texttt{g()} calls \texttt{f()}.
+
+%TODO:
+\section{Data Structures in Memory}
+\subsection{Arrays}
+An array is a type of data structure that holds a fixed number of elements of the same type.
+Arrays are usually stored in memory as a contiguous block of memory.
+Arrays are usually indexed by integers.
+
+Let's look at an example.\\
+
+\begin{figure*}[!h]
+    \begin{lstlisting}[language=c]
+        int foo[5] = {1, 2, 3, 4, 5};
+    \end{lstlisting}
+    \caption{Array of Ints with 5 elements.}
+\end{figure*}
+In the code above we have an array consisting of 5 integers, addresses take up 1 byte of memory, and integers take up 4.
+
+\begin{figure}[!h]
+    \centering
+    \begin{bytefield}{8}
+        \begin{rightwordgroup}{\texttt{foo} is a pointer to the array at \texttt{0x00}}
+            \memsection{0xff}{}{1}{\texttt{foo}}
+        \end{rightwordgroup}\\
+        \memsection{0xfe}{}{4}{...}\\
+        \begin{rightwordgroup}{The actual array}
+            \memsection{0x13}{}{4}{5}\\
+            \memsection{0x0f}{}{4}{4}\\
+            \memsection{0xb}{}{4}{3}\\
+            \memsection{0x08}{}{4}{2}\\
+            \memsection{0x04}{0x00}{4}{1}
+        \end{rightwordgroup}
+    \end{bytefield}
+    \caption{\texttt{foo} in memory}
+    \label{fig:array1}
+\end{figure}
+
+
+The array is stored in memory as a contiguous block of memory, and the variable \texttt{foo} is a pointer to the first element in the array(Figure \ref{fig:array1}).
+To access the elements in the array we can use the pointer \texttt{foo} and add an offset to it.
+The address for the $n'th$ element in an array is given by the following formula, where
+\begin{equation*}
+    \texttt{foo[n]} = \texttt{\&foo} + n * \texttt{sizeof(int)}
+\end{equation*}
+\begin{itemize}
+    \item \texttt{\&foo} is the pointer to the array
+    \item \texttt{n} is the index of the element we want to access
+    \item \texttt{sizeof(int)} is the size of an integer in bytes
+\end{itemize}
+
+
+\subsection{Matrixes and Multidimensional Arrays}
+Things get a little bit more complicated when dealing with multidimensional arrays, and the exact nature of how multidimensional arrays are stored in memory depends on the language.
+\subsubsection{Java}
+\subsubsection{C++}
+\subsubsection{Fortran}
+\subsection{Records, Structs}
+Records are a data structure that can hold multiple values of different types.
+Records are also known as structs, tuples, or classes depending on the language.
+
+\begin{figure}[!h]
+    \begin{lstlisting}[language=c]
+        struct foo {
+            int x;
+            bool y;
+            
+        };
+    \end{lstlisting}
+\end{figure}
+
+\begin{figure}
+\end{figure}
+\subsubsection{Arrays of Records}
+
+
+\textit{Speaking of procedures\dots}

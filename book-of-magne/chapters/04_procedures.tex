@@ -1,0 +1,156 @@
+\chapter{Procedures}
+
+A procedure is a programming construct that abstracts away the implementation of an algorithm. Instead of writing 20 lines of code 
+every time you want to run an algorithm we simply call a procedure with those 20 lines of code inside it. This increases the readability 
+of our code and makes it easier to write it. 
+\section{Procedure Declarations}
+In this course, we have a simplified procedure declaration inspired by PASCAL. Our procedure declarations have a list of 
+parameters(variables that pass in/out of the procedure), another list of local variables(variables that are used within), 
+and a single statement(the algorithm itself).
+If we were to translate this abstract syntax into something more concrete then a typical procedure might look something like this.
+\begin{lstlisting}
+procedure p (upd a: integer , out b: integer ; obs c : boolean ) ;
+var x: integer ;
+    y: boolean ;
+    z : boolean ;
+begin
+    if c then begin b := a ; x := b ; a := x end;
+    y := not c ;
+    c := y or c ;
+end;
+\end{lstlisting}
+The abstract syntax would be something like this in Haskell;
+\begin{lstlisting}[language=Haskell]
+-- | Procedure declaration
+data ProcedureDeclaration = Proc
+                                String -- Name of the procedure
+                                [Parameter] -- Parameter list
+                                [VarDecl] -- Local variables
+                                Stmt -- Statement part
+                                deriving (Show, Eq, Read)
+
+-- | Procedure parameters: mode and variable declaration
+type Parameter = (Mode, VarDecl)
+
+-- | Parameter modes: observe, update, output
+data Mode = Obs | Upd | Out 
+        deriving (Show, Eq, Read)
+
+-- | Variable declaration: variable name and its typ
+type VarDecl = (Var,Type)
+
+\end{lstlisting}
+\subsection{Parameters \& Local Variables}
+A \gls{local var} is a variable that only exits in a specific part of the program. We're going to talk about them in the context of procedures.
+These local variables are declared or defined and only used within that procedure.
+Since the procedure exists in a vacuum, the local variable is allowed to have the same name as variables in other parts of the program. 
+Since the variable is stored at a different store location any change to the local variable wouldn't change the variable outside.
+
+\gls{param} are the variables the procedure uses to communicate to the outside world. They are variables, but with one key difference;
+They also specify \textit{how} it communicates with the outside world, the parameters specify if the variable is an output variable(write), observed only(read), or updatable(is this a word?)(read and write).\\
+Another way of looking at parameters is that parameters are local variables that are initialized with the passed arguments at invocation time.
+\subsection{Performing a Procedure}
+    When performing a function we can usually assume that the parameters have already been added to the environment and initialized and that except for those parameters we have a clean
+    environment to work with.
+    The performing of a procedure consists of the following steps;
+    \begin{enumerate}
+        \item The first is that we need to somehow remember the current environment or delete all the local variables when we're done.
+            The best way is to get the current \gls{stackframe}.
+        \item We then add all the local variables.
+        \item We then execute the procedure statements.
+        \item We then reset the environment back to how it looked before using the saved stack frame from (1). This ensures that all local variables
+            that shouldn't exist outside the procedure are removed. 
+    \end{enumerate}
+\section{Executing a Procedure Call}
+    We now know how to actually perform a procedure, but for us to even be able to perform a procedure in the first place we need to prepare the environment and program for it.
+    There are two main ways of making the program ready to perform a procedure. These are dependent on what type of \gls{argument} passing we are doing.
+\section{Arg Passing}%Difference between args and params
+    Argument passing fall into one of two camps.
+    \subsection{Copy Semantics}
+        The first is \gls{copy sem}. 
+        In copy semantics, all the arguments are passed to the parameters by copying the value into them.
+        With copy semantics, the procedure arguments are first evaluated and then bound to the parameters when they are added.
+        The procedure is then performed, and the results are obtained. Those are then copied back to all the arguments that are upd or out.
+        To further explain let's look at a trivial example to understand what happens in-store.
+        Say we have a procedure that simply adds 5 to any number.
+\begin{lstlisting}
+procedure add5(obs x: integer, out res: integer)
+begin
+    res = x + 5;
+end;
+
+\end{lstlisting}
+        Now let's look at the main procedure
+\begin{lstlisting}
+procedure main()
+    var a: integer;
+    var b: integer;
+begin
+    a = 42;
+    add5(a, b);
+end;
+\end{lstlisting}
+\Cref{fig:mainBeforeCall} shows us what the state looks like before we start executing the procedure call.
+\begin{figure}[!h]
+    \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
+    \caption{State before the procedure call}
+    \label{fig:mainBeforeCall}
+\end{figure}
+The first thing we do when entering the procedure call is to save the stackframe so we can restore the environment to its proper place once we're done. We then clear the environment, ensuring that the only variable declared by the procedure is in scope.
+We then add all the parameters(in our case we add x and res) and copy the values of a and b into x and res respectively \footnote{since res is out it isn't initialized}.
+\Cref{fig:mainBeginCallCopy} shows what the state looks like at this point.
+
+\begin{figure}[!h]
+    \StateDiagram{95}{95}{U,U,I 42,U,I 42}{res/96,x/97}
+    \caption{State when entering add5 (copy semantics).}
+    \label{fig:mainBeginCallCopy}
+\end{figure}     
+
+We have now prepared the procedure so that it can be performed.
+\Cref{fig:mainEndCallCopy} shows how the state looks after its been performed.
+\begin{figure}[!h]
+    \StateDiagram{95}{95}{U,I 47,I 42,U,I 42}{res/96,x/97}
+    \caption{State after res = x +5 in add5 (copy semantics).}
+    \label{fig:mainEndCallCopy}
+\end{figure}
+
+Now comes the fun part, \textit{cleaning}! Just performing the function isn't enough, if we were to just drop it here we would have an environment that 
+is drastically different than then when we started. We could just reset the stackframe to what it was when we started, but then b wouldn't get its new value. 
+What we need to do is copy the values of the out/upd params back to their argument variables. Then we can reset the stackframe making our state look like
+\cref{fig:mainBeforeCall}. As you can see the free pointer now points to where x used to point and b now has the same value as a res. That means that the next time we add something to the environment it will
+overwrite those values in the store.     
+    
+\begin{figure}[!h]
+    \StateDiagram{95}{97}{U,I 47,I 42,I 47,I 42}{b/98,a/99}
+    \caption{State after add5(a, b) in main (copy semantics).}
+    \label{fig:mainAfterCall}
+\end{figure}
+
+    \subsection{Reference Semantics}
+        Now, what if \verb+add5+ could instead write \emph{directly} to b
+        in \verb+main+ instead of having to allocate its own copy which is later copied?
+        This is the main advantage of \gls{ref sem}. Lets reuse the example from before.
+        As you can see the from \cref{fig:mainBeforeCall2} the state before we enter the procedure call is the same as during copy semantics.
+        \begin{figure}[!h]
+            \StateDiagram{97}{97}{U,U,I 42}{b/98,a/99}
+            \caption{State before the procedure call}
+            \label{fig:mainBeforeCall2}
+        \end{figure}
+        
+        It is now we encounter our first change. Like before we get the stackframe before clearing the environment and adding the parameters, but here comes the change.
+        instead of allocating space and copying the value of the args to the upd/out params we instead set their address to the address of the corresponding argument.
+        We now get a state that looks like \cref{fig:mainBeginCallRef}. Since x is an obs parameter it is still allocated and copied to as normal.
+        \begin{figure}[!h]
+            \StateDiagram{96}{96}{U,I 42,U,I 42}{res/98,x/97}
+            \caption{State when entering add5 (reference out).}
+            \label{fig:mainBeginCallRef}
+        \end{figure}
+
+        Since res now points to the same place as b, any changes to ref will also be reflected by b. This makes cleanup much easier!
+        infact all we have to do after performing the procedure is to reset the enviroment back to where it was and call it a day makng the state look like
+        \cref{fig:mainEndCallRef}.
+    \begin{figure}[!h]
+        \StateDiagram{96}{96}{U,I 42,I 47,I 42}{res/98,x/97}
+        \caption{State after res = x+5 in add5 (reference out).}
+        \label{fig:mainEndCallRef}
+    \end{figure}

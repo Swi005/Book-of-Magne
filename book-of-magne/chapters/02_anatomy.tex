@@ -7,18 +7,86 @@ We usually divide the compiler/interpreter process into two categories, front en
 The front end is the part of the compiler/interpreter that takes the source code and converts it into some intermediate representation.
 In compilers, this is usually some form of byte code or 3-word code, that can then be translated into the target language. 
 This is not necessary for an interpreter where the intermediary representation is often in the form of an annotated AST.
-
+The back end is the part of the compiler/interpreter that takes the intermediary representation and executes it(it the case of interpreters) or translates it back into code(compilers).\\
 
 \section{Phases of an interpreter}
 An interpreter is composed of several phases. \\
 The front end consists of the lexical analyzer, the syntax analyzer, and the semantic analyzer.\\
 The backend is the evaluator.\\
-The \gls{lexical analysis} takes the actual characters that the code is made up of and divides it up into its lexical tokens(by the tokenizer) using the concrete syntax of the program\footnote{Not covered by this course, so you can safely ignore how this works.}. 
-It then sends that token stream to the next part of the interpreter. The \gls{syntax analyzer}\\
-The syntax analyzer builds a parse tree out of the tokens and the concrete syntax. This is then converted into an AST by the abstract syntax rules. This AST is then handed over to the next part, the \gls{semantic analyzer}.
-The AST is type-checked, checked for well-formedness, names are resolved, and types are inferred. The new AST, now with added information, is then given to the evaluator so that it can be evaluated and produce a result.
-See Figure 2. for a visual description of the steps.
+The \gls{lexical analysis} takes the actual characters that the code is made up of and divides it up into its lexical tokens(by the tokenizer) using the concrete syntax of the program\footnote{Not covered by this course, so you can safely ignore how this works.... \textit{for now!}}. 
+Take for instance the following expression:
+\begin{equation*}
+    (1+2)*13
+\end{equation*}
+The lexical analyzer would divide this into the following tokens:
+\texttt{["(", "1", "+", "2", ")", "*", "13"]}
+This list of tokens is then sent to the \gls{syntax analyzer}\\
+The syntax analyzer takes the token list and builds a parse tree out of the tokens and the concrete syntax (fig.\ref{fig:parsetree}).
 \begin{figure}[!h]
+    \centering
+    \begin{minipage}{.6\textwidth}
+        \begin{tikzcd}
+            \node[] (e0) {"expr"};
+            \node[below left = of e0] (e1) {"expr"};
+            \node[below left = of e1] (e11) {"("};
+            \node[below = of e1] (e12) {"expr"};
+            \node[below right = of e1] (e13) {")"};
+            \node[below left = of e12] (e121) {"number"};
+            \node[below = of e121] (e1211) {"1"};
+            \node[below = of e12] (e122) {"+"};
+            \node[below right = of e12] (e123) {"number"};
+            \node[below = of e123] (e1231) {"2"};
+            \node[below = of e0] (e2) {"*"};
+            \node[below right = of e0] (e3) {"number"};
+            \node[below = of e3] (e31) {"13"};
+
+            \draw (e0) edge (e1)
+                (e0) edge (e2)
+                (e0) edge (e3)
+                (e1) edge (e11)
+                (e1) edge (e12)
+                (e1) edge (e13)
+                (e12) edge (e121)
+                (e12) edge (e122)
+                (e12) edge (e123)
+                (e121) edge (e1211)
+                (e123) edge (e1231);
+
+        \end{tikzcd}
+    \end{minipage}
+    \caption{Parse tree}
+    \label{fig:parsetree}
+\end{figure}
+
+The parse tree is then converted into an \gls{AST} by the abstract syntax rules (fig.\ref{fig:ast}).
+
+\begin{figure}[!h]
+    \centering
+    \begin{minipage}{0.6\textwidth}
+        \begin{tikzcd}
+            \node[] (e0) {\texttt{Mult}};
+            \node[below left = of e0] (e1) {\texttt{Add}};
+            \node[below left = of e1] (e11) {\texttt{1}};
+            \node[below right = of e1] (e12) {\texttt{2}};
+            \node[below right = of e0] (e2) {\texttt{13}};
+
+            \draw (e0) edge (e1)
+                (e0) edge (e2)
+                (e1) edge (e11)
+                (e1) edge (e12);
+        \end{tikzcd}
+    \end{minipage}
+    \label{fig:ast}
+    \caption{AST}
+\end{figure}
+
+The syntax analyzer builds a parse tree out of the tokens and the concrete syntax. 
+This is then converted into an AST by the abstract syntax rules. 
+Which is then handed over to the next part, the \gls{semantic analyzer}.
+The AST is type-checked, checked for well-formedness, names are resolved, and types are inferred. The new AST, now with added information, is then given to the evaluator so that it can be evaluated and produce a result.
+See Fig. \ref{fig:interpreterphases}.
+
+\begin{figure}[ht]
     \centering
     \begin{minipage}{.5\textwidth}
         \centering
@@ -32,6 +100,7 @@ See Figure 2. for a visual description of the steps.
             \parbox{\textwidth}{}
         \end{tikzcd}}
         \caption{Phases of an interpreter}
+        \label{fig:interpreterphases}
     \end{minipage}%
     \begin{minipage}{.5\textwidth}
         \centering
@@ -48,6 +117,7 @@ See Figure 2. for a visual description of the steps.
             \parbox{\textwidth}{}
         \end{tikzcd}}
         \caption{Phases of a "normal" compiler}
+        \label{fig:compilerphases}
     \end{minipage}%
     \caption{Please appreciate the figures above, they were hard to make}
 \end{figure}%
@@ -91,74 +161,8 @@ See Figure 2. for a visual description of the steps.
             can be computed from the tree (such as type information) and might be encoded directly in the tree (at least at later stages) for easy processing.
             \item Being end-user friendly or familiar to most programmers isn't an important consideration - the abstract syntax may be radically different from
             the surface concrete syntax if that helps the compiler writer.
-
-            \subsection{Sum of products}
-            You may have encountered the term \gls{Sum of Products}, lets's quickly run over why we use the terms \textit{sum} and \textit{product} 
-            to describe the data types, and show some examples in both Haskell and Java.
-            \subsubsection*{Haskell}
-            \begin{lstlisting}[language=Haskell]
-data SomeType = A Bool Bool Bool
-                | B Bool
-                | C
-            \end{lstlisting}
-            Here the type SomeType has 3 constructors, A, B, and C, where A takes 3 parameters, B takes one, and C zero. 
-            The type of SomeType could be expressed algebraically as
-            \begin{align*}
-                \underbrace{(\text{Bool} \times \text{Bool} \times \text{Bool})}_{A} + \underbrace{\text{Bool}}_{B} + \underbrace{1}_{C}
-            \end{align*}
-            The Bool type can take on 2 different values
-            ( False and True ), so the constructor
-            can construct $2 * 2 * 2 = 8$ different values, since there are 8 different combinations you can
-            make from 3 booleans (e.g. A True False False is one example). The constructor B can
-            produce 2 different values, and C can only produce one (not zero!).
-            Thus, the total numbers of values of type SomeType is $8 + 2 + 1 = 11$, as the data type
-            is the sum of the three products we've just described.\\
-            In short, a sum type denotes “one of” its constituent types (if your function takes SomeType
-            as input, it will get either (A b1 b2 b3 ), (B b1) or C for some boolean values b1 . . .), while
-            a product type denotes “all of” its constituent types (e.g. a value constructed with A will
-            have all 3 booleans present.) Another way to express a product type in Haskell is with tuples,
-            e.g.
-            \begin{lstlisting}[language=Haskell]
-type MyTriple = (Bool, Int , Char)
-            \end{lstlisting}
-            \subsubsection*{Java}
-            In Java, we can model the same kind of data types using classes and inheritance. The instance
-            variables of a class determine a “product” type, e.g.
-            \begin{lstlisting}[language=Java]
-class SomeClass {
-    boolean a;
-    boolean b;
-    boolean c;
-}
-            \end{lstlisting}
-        Similar to the constructor for A in the previous section, there are $2 * 2 * 2 = 8$ different
-values an object of class SomeClass can have. Add another boolean, and you get 16 different
-values. Technically, a variable of type SomeClass can take one 8 + 1 different values, since
-null is also a valid value for all object variables in Java, but sometimes we ignore this fact
-and tell the users of our functions to kindly not pass in null as an argument where we expect
-an actual object.
-Now, to get sum types, we might use class hierarchies in Java:
-
-\begin{lstlisting}[language=Java]
-interface SomeType {}
-
-class A implements SomeType {
-    boolean a;
-    boolean b;
-    boolean c ;
-}
-class B implements SomeType {
-    boolean a;
-}
-class C implements SomeType {
-}
-
-\end{lstlisting}
-    Now, an object of type SomeType can (ignoring null) take on $8 + 2 + 1$ different values,
-    just like in the Haskell example above.
-
-
         \end{itemize}
+
     \section{Static Analysis}
         \subsection{Type Checking}
         Programming language typing always falls into one or two categories; static, and dynamic typing. Static typing is when type checking happens at compile-time, 
@@ -213,7 +217,7 @@ class C implements SomeType {
         Here we begin by checking that the test evals to a boolean type, if so we check that both branches have the same type and return that type.
         Note that even though an evaluator would only evaluate one of the two branches, we still type-check them both.
         \subsection{Wellformedness}
-            For a program to be \gls{wellformed}it needs to satisfy all the constraints(kinda like rules) on it. This means that the program follows all the rules 
+            For a program to be \gls{wellformed} it needs to satisfy all the constraints(think rules) on it. This means that the program follows all the rules 
             for it like; 
             \begin{itemize}
                 \item The program conforms to the AST.
