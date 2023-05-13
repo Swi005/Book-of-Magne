@@ -1,3 +1,4 @@
+\vfill
 \chapter{What is a language}
 \section{What is a programming language}
     A programming language 
@@ -19,13 +20,14 @@
         \item DSL
         \item GPL
     \end{itemize}
-
+    
     \Gls{DSL} are as the name suggests languages with a "specific" domain.\\
     DSLs usually have limited scope and use. Examples are JSON and SQL.     
     A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
     Optimized for a certain problem/domain. 
     DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)\\
 
+    \newpage
 
     \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
     These languages have a wide array
@@ -59,7 +61,8 @@
     Meta-programming is programming \textit{about} programming. More properly meta-programs treat other programs as data. When you see a data structure like \gls{BTL} or \gls{BIPL} in Haskell it
     represents a program.
     \comment{TODO:Talk about meta languages, Object languages, and classify BTL, BIPL, and PIPL as DSL or GPL}
-
+    
+    \newpage
     \section{Sum of products}
         You may have encountered the term \gls{Sum of Products}, lets's quickly run over why we use the terms \textit{sum} and \textit{product} 
         to describe the data types, and show some examples in both Haskell and Java.
@@ -109,7 +112,8 @@ class SomeClass {
     and tell the users of our functions to kindly not pass in null as an argument where we expect
     an actual object.
     Now, to get sum types, we might use class hierarchies in Java:
-
+    
+    \newpage
     \begin{lstlisting}[language=Java]
 interface SomeType {}
 

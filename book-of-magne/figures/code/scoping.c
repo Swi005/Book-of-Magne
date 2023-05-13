@@ -16,7 +16,8 @@ int g()
    return f();
 }
  
-main()
+int main()
 {
   print(g());
+  return 0;
 }

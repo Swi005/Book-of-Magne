@@ -7,7 +7,7 @@ We usually divide the compiler/interpreter process into two categories, front en
 The front end is the part of the compiler/interpreter that takes the source code and converts it into some intermediate representation.
 In compilers, this is usually some form of byte code or 3-word code, that can then be translated into the target language. 
 This is not necessary for an interpreter where the intermediary representation is often in the form of an annotated AST.
-The back end is the part of the compiler/interpreter that takes the intermediary representation and executes it(it the case of interpreters) or translates it back into code(compilers).\\
+The back end is the part of the compiler/interpreter that takes the intermediary representation and executes it(in the case of interpreters) or translates it back into code(compilers).\\
 
 \section{Phases of an interpreter}
 An interpreter is composed of several phases. \\
@@ -15,45 +15,46 @@ The front end consists of the lexical analyzer, the syntax analyzer, and the sem
 The backend is the evaluator.\\
 The \gls{lexical analysis} takes the actual characters that the code is made up of and divides it up into its lexical tokens(by the tokenizer) using the concrete syntax of the program\footnote{Not covered by this course, so you can safely ignore how this works.... \textit{for now!}}. 
 Take for instance the following expression:
+\\
 \begin{equation*}
     (1+2)*13
-\end{equation*}
+\end{equation*}\\
+\\
 The lexical analyzer would divide this into the following tokens:
 \texttt{["(", "1", "+", "2", ")", "*", "13"]}
+\newpage
 This list of tokens is then sent to the \gls{syntax analyzer}\\
 The syntax analyzer takes the token list and builds a parse tree out of the tokens and the concrete syntax (fig.\ref{fig:parsetree}).
 \begin{figure}[!h]
     \centering
-    \begin{minipage}{.6\textwidth}
-        \begin{tikzcd}
-            \node[] (e0) {"expr"};
-            \node[below left = of e0] (e1) {"expr"};
-            \node[below left = of e1] (e11) {"("};
-            \node[below = of e1] (e12) {"expr"};
-            \node[below right = of e1] (e13) {")"};
-            \node[below left = of e12] (e121) {"number"};
-            \node[below = of e121] (e1211) {"1"};
-            \node[below = of e12] (e122) {"+"};
-            \node[below right = of e12] (e123) {"number"};
-            \node[below = of e123] (e1231) {"2"};
-            \node[below = of e0] (e2) {"*"};
-            \node[below right = of e0] (e3) {"number"};
-            \node[below = of e3] (e31) {"13"};
+    \begin{tikzcd}
+        \node[] (e0) {"expr"};
+        \node[below left = of e0] (e1) {"expr"};
+        \node[below left = of e1] (e11) {"("};
+        \node[below = of e1] (e12) {"expr"};
+        \node[below right = of e1] (e13) {")"};
+        \node[below left = of e12] (e121) {"number"};
+        \node[below = of e121] (e1211) {"1"};
+        \node[below = of e12] (e122) {"+"};
+        \node[below right = of e12] (e123) {"number"};
+        \node[below = of e123] (e1231) {"2"};
+        \node[below = of e0] (e2) {"*"};
+        \node[below right = of e0] (e3) {"number"};
+        \node[below = of e3] (e31) {"13"};
 
-            \draw (e0) edge (e1)
-                (e0) edge (e2)
-                (e0) edge (e3)
-                (e1) edge (e11)
-                (e1) edge (e12)
-                (e1) edge (e13)
-                (e12) edge (e121)
-                (e12) edge (e122)
-                (e12) edge (e123)
-                (e121) edge (e1211)
-                (e123) edge (e1231);
+        \draw (e0) edge (e1)
+            (e0) edge (e2)
+            (e0) edge (e3)
+            (e1) edge (e11)
+            (e1) edge (e12)
+            (e1) edge (e13)
+            (e12) edge (e121)
+            (e12) edge (e122)
+            (e12) edge (e123)
+            (e121) edge (e1211)
+            (e123) edge (e1231);
 
-        \end{tikzcd}
-    \end{minipage}
+    \end{tikzcd}
     \caption{Parse tree}
     \label{fig:parsetree}
 \end{figure}
@@ -62,20 +63,18 @@ The parse tree is then converted into an \gls{AST} by the abstract syntax rules 
 
 \begin{figure}[!h]
     \centering
-    \begin{minipage}{0.6\textwidth}
-        \begin{tikzcd}
-            \node[] (e0) {\texttt{Mult}};
-            \node[below left = of e0] (e1) {\texttt{Add}};
-            \node[below left = of e1] (e11) {\texttt{1}};
-            \node[below right = of e1] (e12) {\texttt{2}};
-            \node[below right = of e0] (e2) {\texttt{13}};
+    \begin{tikzcd}
+        \node[] (e0) {\texttt{Mult}};
+        \node[below left = of e0] (e1) {\texttt{Add}};
+        \node[below left = of e1] (e11) {\texttt{1}};
+        \node[below right = of e1] (e12) {\texttt{2}};
+        \node[below right = of e0] (e2) {\texttt{13}};
 
-            \draw (e0) edge (e1)
-                (e0) edge (e2)
-                (e1) edge (e11)
-                (e1) edge (e12);
-        \end{tikzcd}
-    \end{minipage}
+        \draw (e0) edge (e1)
+            (e0) edge (e2)
+            (e1) edge (e11)
+            (e1) edge (e12);
+    \end{tikzcd}
     \label{fig:ast}
     \caption{AST}
 \end{figure}
@@ -121,7 +120,7 @@ See Fig. \ref{fig:interpreterphases}.
     \end{minipage}%
     \caption{Please appreciate the figures above, they were hard to make}
 \end{figure}%
-
+\newpage
 \section{ASTs \& Static Analysis}
     \section{ASTs}
         An \gls{AST} is the tree representation of the syntactic structure of a program; The abstract syntax
@@ -140,7 +139,9 @@ See Fig. \ref{fig:interpreterphases}.
         on the information contained in a parse tree. Translating a parse tree into a
         corresponding abstract syntax tree is called imploding the parse tree.
         Given an abstract syntax tree, it is possible to reconstruct a parse tree or program text, given the original grammar - though the resulting program may be
-        slightly different in terms of spaces and punctuation. This is called unparsing or
+        slightly different in terms of spaces and punctuation. 
+        \newpage
+        This is called unparsing or
         pretty-printing (particularly if the output is nicely formatted). Parsing, imploding, pretty-printing, and then reparsing may not yield the exact same parse tree
         as the original tree, but it should still implode to the same abstract syntax tree (otherwise there is a bug in your toolchain!).
 
@@ -157,7 +158,7 @@ See Fig. \ref{fig:interpreterphases}.
             only one AST node type to cover both. Having a lot of unnecessary nodes
             in the tree can be annoying as well, and may make processing slower.
             \item Good correspondence with the constructs of the language.
-            \item Availability of information during processing. Some information that
+            \item Availability of information during processing. Some information 
             can be computed from the tree (such as type information) and might be encoded directly in the tree (at least at later stages) for easy processing.
             \item Being end-user friendly or familiar to most programmers isn't an important consideration - the abstract syntax may be radically different from
             the surface concrete syntax if that helps the compiler writer.
@@ -216,6 +217,8 @@ See Fig. \ref{fig:interpreterphases}.
            
         Here we begin by checking that the test evals to a boolean type, if so we check that both branches have the same type and return that type.
         Note that even though an evaluator would only evaluate one of the two branches, we still type-check them both.
+        
+        
         \subsection{Wellformedness}
             For a program to be \gls{wellformed} it needs to satisfy all the constraints(think rules) on it. This means that the program follows all the rules 
             for it like; 
@@ -225,6 +228,8 @@ See Fig. \ref{fig:interpreterphases}.
                 \item All procedure calls/declarations are wellformed.
                 \item and much more.
             \end{itemize}
+
+            \newpage
             To check if a program is wellformed we usually implement a so-called constraint checker. These are pretty much just unit tests.
             The recipe for a constrain checker is as follows;
             \begin{itemize}

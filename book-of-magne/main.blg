@@ -2,10 +2,18 @@ This is BibTeX, Version 0.99d (TeX Live 2023/Arch Linux)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: plain.bst
+A level-1 auxiliary file: chapters/frontpage.aux
+A level-1 auxiliary file: chapters/00_preface.aux
+A level-1 auxiliary file: chapters/01_languages.aux
+A level-1 auxiliary file: chapters/02_anatomy.aux
+A level-1 auxiliary file: chapters/03_store_state_storage.aux
+A level-1 auxiliary file: chapters/04_procedures.aux
+A level-1 auxiliary file: chapters/05_signatures.aux
+A level-1 auxiliary file: chapters/06_mdcs.aux
 Database file #1: main.bib
 You've used 2 entries,
             2118 wiz_defined-function locations,
-            506 strings with 4188 characters,
+            514 strings with 4388 characters,
 and the built_in function-call counts, 409 in all, are:
 = -- 38
 > -- 14

@@ -129,16 +129,34 @@ Records are a data structure that can hold multiple values of different types.
 Records are also known as structs, tuples, or classes depending on the language.
 
 \begin{figure}[!h]
+    \centering
     \begin{lstlisting}[language=c]
-        struct foo {
-            int x;
-            bool y;
-            
-        };
+struct foo {
+    int x; //Offset 0
+    bool y; //Offset 4
+    double z;//Offset 5
+};
     \end{lstlisting}
 \end{figure}
-
-\begin{figure}
+\begin{align*}
+    |\texttt{foo}| &= |\texttt{x}| + |\texttt{y}| + |\texttt{z}| \\
+    &= 4 + 1 + 8 = 13
+\end{align*}
+\begin{figure}[!h]
+    \centering
+    \begin{bytefield}{8}
+        \begin{rightwordgroup}{\texttt{foo} is a pointer to the struct at \texttt{0x00}}
+            \memsection{0xff}{}{1}{\texttt{foo}}
+        \end{rightwordgroup}\\
+        \memsection{0xfe}{0x0a}{4}{...}\\
+        \begin{rightwordgroup}{The actual struct}
+            \memsection{}{0x05}{8}{z}\\
+            \memsection{}{0x04}{1}{y}\\
+            \memsection{}{0x00}{4}{x}
+        \end{rightwordgroup}
+    \end{bytefield}
+    \caption{\texttt{foo} in memory}
+    \label{fig:struct1}
 \end{figure}
 \subsubsection{Arrays of Records}
 
