@@ -1,19 +1,107 @@
 \chapter{Signatures}
+So far we've defined all our operations as part of our AST. 
+By introducting signatures into our compilers we can abstract away the implementation of our operations from the AST.
+This allows us to change the implementation of our operations without changing the AST.
+Before we can do this we need to talk a bit about the theory behind signatures and algebras
 
-\section{Algebraic Specification Theory}
+\section{A little bit of Theory}
+
 \subsection{Signatures}
-A signature\footnote{also called \textit{Interfaces}} $I = (S,F)$ where
+Signatures are a way to define a set of operations and their types.
+
+Formaly a signature\footnote{also called an \textit{Interface}} is defined as $I = \langle S,F \rangle$ where
 \begin{itemize}
-    \item $S$ is a set of sorts(typenames), and
+    \item $S$ is a set of sorts(aka typenames), and
     \item $F$ is a set of function declarations $f: s_1, ..., s_n \rightarrow s$, for $s1, \dots, s_n, s \in S$
 \end{itemize}
+Signatures alone do not define any semantics, they are just a way to define which operations and types exist, but not what they do.
+To define the semantics we need to define what we call an algebra.
 
+Here's an example of a signature.
+\begin{align*}
+    Nat = \langle \{&N\},\\ 
+                  \{&zero: N,\\
+                    &succ: N \rightarrow N\} \rangle
+\end{align*}
 
 \subsection{Algebras}
+An algebra is a way to define the semantics of a signature.
+An algebra assigns every sort to a domain and every function to a function on the domains.
+An algebra $A$ for a signature $I = \rangle S,F \langle$ defines
+\begin{itemize}
+    \item a set $[\![s]\!]_A$ for every sort $s \in S$, and
+    \item a total function $[\![f]\!]_A : [\![s_1]\!]_A \times ... \times [\![s_k]\!]_A \rightarrow [\![s]\!]_A$ for every  $(f: s_1, ... , s_k \rightarrow s) \in F$
+\end{itemize}
+It's possible to have multiple algebras for a signature.
+Here are a couple of algebras for the $Nat$ signature.
+
+\begin{align*}
+    \alg{N}{A_1} &= \mathcal{N}\\
+    \alg{zero}{A_1} &= 0\\
+    \alg{succ}{A_1} &= \lambda n \mapsto n + 1\\
+    &{}\\
+    \alg{N}{A_2} &= \{1,2,7\}\\
+    \alg{zero}{A_2} &= 2\\
+    \alg{succ}{A_2} &= \lambda n \mapsto 7\\
+\end{align*}
+
+
 
 \section{Implementing Algebraic Specifications}
+Integrating signatures and algebras into our interpreter means we can use Algebraic specification theory to formalize and reason about it.
+It also lets us change the implementation of our operations without changing the AST and is one step towards user-defined types, and generic programming.
 
-\section{ADT's}
+The AST in Figure. \ref{fig:signatures:ex1:ast} can be rewritten to make use of signatures.
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=4]{figures/code/signatures/ex1/AST.hs}
+    \label{fig:signatures:ex1:ast}
+    \caption{}
+\end{figure}
+
+We do this by creating a new AST without any operations apart from Literals, Variables, and Function calls.
+And instead of returning a \texttt{Int} we make it so that the AST can work for any \texttt{valuedomain}(FIgure \ref{fig:signatures:ex1:ast2}).
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=4, lastline=8]{figures/code/signatures/ex1/AST2.hs}
+    \label{fig:signatures:ex1:ast2}
+    \caption{}
+\end{figure}
+We also change the evaluator to reflect this change. One major change(apart from the lack of operations) is that we now need to pass the algebra(\texttt{funmod}) to the evaluator.
+
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=11]{figures/code/signatures/ex1/AST2.hs}
+    \label{fig:signatures:ex1:eval}
+    \caption{}
+\end{figure}
+
+Not that we've adapted the AST for signatures it's time to implement a signature for the operations we removed.
+
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=10, lastline=17]{figures/code/signatures/ex1/Intrinsics.hs}
+    \label{fig:signatures:ex1:sig}
+    \caption{}
+\end{figure}
+You may have noticed one major change from the old AST. The old AST only worked on \texttt{Int}s, but we've added a second sort \texttt{Bool} to the signature.
+Since Haskell only lets us use one type for the valuedomain we need to create a new type that can hold both \texttt{Int}s and \texttt{Bool}s.
+
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=20, lastline=20]{figures/code/signatures/ex1/Intrinsics.hs}
+    \label{fig:signatures:ex1:valuedomain}
+    \caption{}
+\end{figure}
+
+We then define our algebra for the functions in the signature.
+\begin{figure}[!h]
+    \lstinputlisting[language=Haskell, firstline=22]{figures/code/signatures/ex1/Intrinsics.hs}
+    \label{fig:signatures:ex1:alg}
+    \caption{}
+\end{figure}
+
+Now, there are some downsides to using signatures. For one we no longer get to use Haskell's built-in type system to check that we're using the right types.
+That means that we need to implement and adapt our type checker to work with signatures.
+
+\subsection{ADT's}
+Abstract Data Types are
 
 \section{Generic Programming}
+
 \subsection{Concepts}
