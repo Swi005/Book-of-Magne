@@ -9,11 +9,12 @@ A level-1 auxiliary file: chapters/02_anatomy.aux
 A level-1 auxiliary file: chapters/03_store_state_storage.aux
 A level-1 auxiliary file: chapters/04_procedures.aux
 A level-1 auxiliary file: chapters/05_signatures.aux
-A level-1 auxiliary file: chapters/06_mdcs.aux
+A level-1 auxiliary file: chapters/AA_Assertions.aux
+A level-1 auxiliary file: chapters/BB_Language_standards.aux
 Database file #1: main.bib
 You've used 2 entries,
             2118 wiz_defined-function locations,
-            514 strings with 4388 characters,
+            515 strings with 4428 characters,
 and the built_in function-call counts, 409 in all, are:
 = -- 38
 > -- 14

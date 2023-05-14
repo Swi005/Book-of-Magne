@@ -121,7 +121,6 @@ See Fig. \ref{fig:interpreterphases}.
     \caption{Please appreciate the figures above, they were hard to make}
 \end{figure}%
 \newpage
-\section{ASTs \& Static Analysis}
     \section{ASTs}
         An \gls{AST} is the tree representation of the syntactic structure of a program; The abstract syntax
         describes the structure of the abstract syntax tree - it can be defined using a
@@ -140,9 +139,7 @@ See Fig. \ref{fig:interpreterphases}.
         corresponding abstract syntax tree is called imploding the parse tree.
         Given an abstract syntax tree, it is possible to reconstruct a parse tree or program text, given the original grammar - though the resulting program may be
         slightly different in terms of spaces and punctuation. 
-        \newpage
-        This is called unparsing or
-        pretty-printing (particularly if the output is nicely formatted). Parsing, imploding, pretty-printing, and then reparsing may not yield the exact same parse tree
+        This is called unparsing or pretty-printing (particularly if the output is nicely formatted). Parsing, imploding, pretty-printing, and then reparsing may not yield the exact same parse tree
         as the original tree, but it should still implode to the same abstract syntax tree (otherwise there is a bug in your toolchain!).
 
         Various phases in a language processor may change the abstract syntax
@@ -178,7 +175,9 @@ See Fig. \ref{fig:interpreterphases}.
 
         What is a type checker and how does it work? 
         A type checker is a meta-program that checks that verifies that the type of some construct(lists, expressions, etc.) matches what's expected of it.
-        For example, a type checker will check that the Plus \gls{expression} takes two Integers. This lets the type checker discover and report certain errors before the program runs. 
+        For example, a type checker will check that the Plus \gls{expression} takes two Integers. 
+        \newpage
+        This lets the type checker discover and report certain errors before the program runs. 
         To do this a type checker needs to know;
         \begin{itemize}
             \item How the language should look.
@@ -187,33 +186,33 @@ See Fig. \ref{fig:interpreterphases}.
         \end{itemize}
         \subsubsection*{Let's do a practical example}
         Here's the abstract syntax for our Simple Typed Language or STL for short.
-        \lstinputlisting[language=Haskell, firstline=2, lastline=11]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=2, lastline=11]{figures/code/typecheck/typecheck.hs}
         Before we can continue we need to define the types that are allowed. We decide to use two types, Integers, and Booleans.
-        \lstinputlisting[language=Haskell, firstline=12, lastline=12]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=12, lastline=12]{figures/code/typecheck/typecheck.hs}
         
         Now to the meat of the exercise, the type checker itself.
         The usual way to do this in Haskell(and most other languages I've experienced) is to define a series of recursive functions, one for each
         expression/operand.
-        \lstinputlisting[language=Haskell, firstline=14, lastline=14]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=14, lastline=14]{figures/code/typecheck/typecheck.hs}
         
         I have found it easiest, to begin with, the cases that form the basic "building blocks" of a language, the literals. It is easy to know the type of Int Literals(Integer obviously), and Bool Literals(Boolean).
-        \lstinputlisting[language=Haskell, firstline=15, lastline=16]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=15, lastline=16]{figures/code/typecheck/typecheck.hs}
         
         After these "base" cases we add a case for Vars, this is slightly more complicated since the type is dependent on the list of var declarations, 
         so we need to check the VarDecl list.
-        \lstinputlisting[language=Haskell, firstline=18, lastline=21]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=18, lastline=21]{figures/code/typecheck/typecheck.hs}
         
         We use a pretty clever Haskell expression called "case". This lets us pattern match the result of the function call in lookup. 
         I strongly recommend that you all learn how to use these since they are extremely useful and I'll be using them liberally during this example.\\
         We now move on to the ops.
-        \lstinputlisting[language=Haskell, firstline=23, lastline=48]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=23, lastline=48]{figures/code/typecheck/typecheck.hs}
         
         These all more-or-less follow the same pattern \footnote{Maya made me use fancier words, apparently "pretty similar" isn't good enough.}.
         They all check that the arguments are of the correct type and return the operand type if so, if not they raise an error.
         Eq is the odd one out since it returns a boolean no matter what since it checks if two expressions are the same.\\
         The last case is the most complex. Choice tests a boolean condition and returns one of the two expressions depending on the value.
         The problem is that we don't know which branch will return. We have therefore decided both branches need to be of the same type.
-        \lstinputlisting[language=Haskell, firstline=50, lastline=57]{figures/code/typecheck.hs}
+        \lstinputlisting[language=Haskell, firstline=50, lastline=57]{figures/code/typecheck/typecheck.hs}
            
         Here we begin by checking that the test evals to a boolean type, if so we check that both branches have the same type and return that type.
         Note that even though an evaluator would only evaluate one of the two branches, we still type-check them both.
@@ -229,7 +228,6 @@ See Fig. \ref{fig:interpreterphases}.
                 \item and much more.
             \end{itemize}
 
-            \newpage
             To check if a program is wellformed we usually implement a so-called constraint checker. These are pretty much just unit tests.
             The recipe for a constrain checker is as follows;
             \begin{itemize}

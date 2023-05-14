@@ -114,8 +114,23 @@
     \include{chapters/05_signatures.tex}
     \newpage
 
-    \include{chapters/06_mdcs.tex}
+    %\include{chapters/06_mdcs.tex}
+    %\newpage
+
+    \appendix
+
+    \include{chapters/AA_Assertions.tex}
     \newpage
 
+    \include{chapters/BB_Language_standards.tex}
+    \newpage
+
+    %\glsaddall
+    %\printglossary[title=Glossary,toctitle=Glossary]
+    %\printglossaries
+    \addcontentsline{toc}{chapter}{Glossary}
+    \printnoidxglossaries
+    
+    \addcontentsline{toc}{chapter}{Bibliography}
     \bibliography{main}
 \end{document}

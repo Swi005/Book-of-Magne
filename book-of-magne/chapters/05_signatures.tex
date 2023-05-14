@@ -1,13 +1,13 @@
 \chapter{Signatures}
 So far we've defined all our operations as part of our AST. 
-By introducting signatures into our compilers we can abstract away the implementation of our operations from the AST.
+By introducing signatures into our compilers we can abstract away the implementation of our operations from the AST.
 This allows us to change the implementation of our operations without changing the AST.
 Before we can do this we need to talk a bit about the theory behind signatures and algebras
 
 \section{A little bit of Theory}
 
 \subsection{Signatures}
-Signatures are a way to define a set of operations and their types.
+\gls{signature}s are a way to define a set of operations and their types.
 
 Formaly a signature\footnote{also called an \textit{Interface}} is defined as $I = \langle S,F \rangle$ where
 \begin{itemize}
@@ -25,7 +25,7 @@ Here's an example of a signature.
 \end{align*}
 
 \subsection{Algebras}
-An algebra is a way to define the semantics of a signature.
+An \gls{algebra} is a way to define the semantics of a signature.
 An algebra assigns every sort to a domain and every function to a function on the domains.
 An algebra $A$ for a signature $I = \rangle S,F \langle$ defines
 \begin{itemize}
@@ -51,57 +51,90 @@ Here are a couple of algebras for the $Nat$ signature.
 Integrating signatures and algebras into our interpreter means we can use Algebraic specification theory to formalize and reason about it.
 It also lets us change the implementation of our operations without changing the AST and is one step towards user-defined types, and generic programming.
 
-The AST in Figure. \ref{fig:signatures:ex1:ast} can be rewritten to make use of signatures.
-\begin{figure}[!h]
+Lets take a look at how we can rewrite an interpreter to make use of signatures.
+
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=4]{figures/code/signatures/ex1/AST.hs}
-    \label{fig:signatures:ex1:ast}
-    \caption{}
+    \label{fig:astx}
+    \caption{Interpreter for a simple language}
 \end{figure}
 
 We do this by creating a new AST without any operations apart from Literals, Variables, and Function calls.
-And instead of returning a \texttt{Int} we make it so that the AST can work for any \texttt{valuedomain}(FIgure \ref{fig:signatures:ex1:ast2}).
-\begin{figure}[!h]
+And instead of returning a \texttt{Int} we make it so that the AST can work for any \texttt{valuedomain}(FIgure \ref{fig:ast2}).
+
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=4, lastline=8]{figures/code/signatures/ex1/AST2.hs}
-    \label{fig:signatures:ex1:ast2}
-    \caption{}
+    \label{fig:ast2}
 \end{figure}
+
 We also change the evaluator to reflect this change. One major change(apart from the lack of operations) is that we now need to pass the algebra(\texttt{funmod}) to the evaluator.
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=11]{figures/code/signatures/ex1/AST2.hs}
-    \label{fig:signatures:ex1:eval}
-    \caption{}
+    \label{fig:eval}
 \end{figure}
 
 Not that we've adapted the AST for signatures it's time to implement a signature for the operations we removed.
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=10, lastline=17]{figures/code/signatures/ex1/Intrinsics.hs}
-    \label{fig:signatures:ex1:sig}
-    \caption{}
+    \label{fig:sig}
 \end{figure}
 You may have noticed one major change from the old AST. The old AST only worked on \texttt{Int}s, but we've added a second sort \texttt{Bool} to the signature.
 Since Haskell only lets us use one type for the valuedomain we need to create a new type that can hold both \texttt{Int}s and \texttt{Bool}s.
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=20, lastline=20]{figures/code/signatures/ex1/Intrinsics.hs}
-    \label{fig:signatures:ex1:valuedomain}
-    \caption{}
+    \label{fig:valuedomain}
 \end{figure}
+\newpage
 
 We then define our algebra for the functions in the signature.
-\begin{figure}[!h]
+
+\begin{figure}[H]
     \lstinputlisting[language=Haskell, firstline=22]{figures/code/signatures/ex1/Intrinsics.hs}
-    \label{fig:signatures:ex1:alg}
-    \caption{}
+    \label{fig:alg}
 \end{figure}
 
 Now, there are some downsides to using signatures. For one we no longer get to use Haskell's built-in type system to check that we're using the right types.
 That means that we need to implement and adapt our type checker to work with signatures.
 
-\subsection{ADT's}
-Abstract Data Types are
+\subsection{ADTs}
+We've implemented Signatures in our interpreter, but we haven't given the user a way to define their own yet. 
+We can do this by introducing \gls{adt} in our language.
+Abstract Data Types are a way to define a type and its operations without exposing the implementation. \\
+The best example of ADTs are probably Interfaces in Java.
 
+Methods in Java Interfaces don't have any implementation\footnote{We'll conveniently ignore the existence of the \texttt{defaul} keyword.}, they just define the signature of the method.
+This means that we can define a method in an interface and then implement it in multiple ways.
+This is a very powerful tool for generic programming.
+
+\begin{figure}[H]
+    \lstinputlisting[language=Java, firstline=1]{figures/code/signatures/ADT/IStack.java}
+    \label{fig:istack}
+    \caption{ADT for a Stack}
+\end{figure}
+
+\newpage
+
+Figure \ref{fig:stack} shows one implementation of \texttt{IStack}.
+
+\begin{figure}[h]
+    \lstinputlisting[language=Java, firstline=8, lastline=26]{figures/code/signatures/ADT/Stack.java}
+    \label{fig:stack}
+    \caption{Stack}
+\end{figure}
+
+Since ADTs don't specify an implementation it is perfectly valid for me to implement whatever I want as long as it has the same signature.
+For example, I could implement \texttt{IStack} as a linked list instead of an array.
+Or we could go a step further and observe that the only difference between stacks and queues is the behavior of \texttt{pop}.\\
+So Figure \ref{fig:queue} is a totally valid implementation of the \texttt{Stack} ADT.
+
+\begin{figure}[!h]
+    \lstinputlisting[language=Java, firstline=7, lastline=26]{figures/code/signatures/ADT/Queue.java}
+    \label{fig:queue}
+    \caption{Queue}
+\end{figure}
 \section{Generic Programming}
 
 \subsection{Concepts}

@@ -25,6 +25,7 @@
                                         It means that a program can be designed to read, generate, analyze, or transform other programs, and even modify itself while running.}}
 \newglossaryentry{BTL}{name={\textbf{Basic Typed Language}},description={Simple language with a few types and expressions on those types }}
 \newglossaryentry{BIPL}{name={\textbf{Basic Imperative Programing Language}},description={An extension of BTL, but with statements and control flow.}}
+\newglossaryentry{PIPL}{name={\textbf{Procedural Imperative Programming Language}}, description={An extension of BIPL, but with procedures and functions.}}
 \newglossaryentry{expression}{name={\textbf{Expression}},description={An expression is a syntactic construct that can be evaluated in order to obtain its value. The resulting value is usually one of the program's types.}}
 \newglossaryentry{wellformed}{name={\textbf{Wellformed}},description={Wellformedness is when a program is following all the rules. smileemoji}}
 \newglossaryentry{store}{name={\textbf{Store}},description={Program memory, byte/value array, grows upwards.}}
@@ -41,7 +42,13 @@
 \newglossaryentry{SLE}{name={\textbf{Software Language Engineering}},description={Software Language Engineering is the scientific field that researches language development, and maintenance of formal descriptions, and tooling of software lanugages}}
 \newglossaryentry{BNF}{name={\textbf{Backus-Naur Form}},description={Formal notation for describing grammars. Used to describe the syntax of a language.}}
 \newglossaryentry{Sum of Products}{name={\textbf{Sum of Products}},description={See chapter 1.3}}
-\newglossaryentry{lexical analysis}{name={\textbf{Lexical Analysis}},description={Lexical analysis is the process of converting a sequence of characters into a sequence of tokens.}}}
+\newglossaryentry{lexical analysis}{name={\textbf{Lexical Analysis}},description={Lexical analysis is the process of converting a sequence of characters into a sequence of tokens.}}
 \newglossaryentry{syntax analyzer}{name={\textbf{Syntax Analyzer}},description={Takes a stream of tokens and checks if it follows the rules of the grammar. Outputs a parse tree that is then assembled into an AST}}
-\newglossaryentry{semantic analyzer}{name={\textbf{Semantic Analyzer}},description={Takes an AST and checks if it follows the rules of the language. Outputs a annotated AST}}
+\newglossaryentry{semantic analyzer}{name={\textbf{Semantic Analyzer}},description={Takes an AST and checks if it follows the rules of the language. Outputs an annotated AST}}
+\newglossaryentry{signature}{name={\textbf{Signature}}, description={A signature defines a set of operations and their types, but not the semantics of the operations.}}
+\newglossaryentry{algebra}{name={\textbf{Algebra}}, description={An algebra defines the semantics of a signature.}}
+\newglossaryentry{adt}{name={\textbf{Abstract Data Type(ADT)}}, description={An ADT is a data type that is defined by its behavior from the point of view of a user, of the data, specifically in terms of possible values, possible operations on data of this type, and the behavior of these operations.}}
+
+\newglossaryentry{meta-language}{name={\textbf{Meta-Language}}, description={The language a compiler is written in}}
+\newglossaryentry{object-language}{name={\textbf{Object Language}}, description={The language that gets compiled}}}
 \makenoidxglossaries

@@ -17,8 +17,6 @@ An environment is a map between variables and their location in the store. \\
 \comment{Elaborate more about variables as name bindings.}
 \section{Scoping}
 \label{sec:scope}
-\comment{TODO: Rewrite scoping section}
-%Explain scope
 
 Most variables are not visible to the entire program.
 In previous courses, you have in all likelihood encountered global and local variables when programming.
@@ -26,10 +24,10 @@ Where global variables are variables that are visible to the entire program, and
 
 The term for where a variable is visible is called the \gls{scope} of a variable.
 Variable scoping is useful because it lets us keep variables in different parts of our programs separate.
-If you were to write a calculator it would be somewhat awkward if you could only use \texttt{x} and \texttt{y} once.\\
-\newline
-Scope can also apply to more than just variables, and all declarations usually have scope.
+If you were to write a calculator it would be somewhat awkward if you could only use \texttt{x} and \texttt{y} once.
 
+\newpage
+Scope can also apply to more than just variables, and all declarations usually have scope.
 Most languages generally use one of three classes of scoping, and these can have wildly different effects on a program's semantics:
 
 \begin{itemize}
@@ -52,7 +50,7 @@ To better illustrate the differences let's take a look at an example!
 
 \begin{figure}[!h]
     \centering
-    \lstinputlisting[language=c]{figures/code/scoping.c}  
+    \lstinputlisting[language=c]{figures/code/scoping/scoping.c}  
     \caption{Scoping Example}
     \label{fig:scoping}
 \end{figure}
@@ -69,24 +67,23 @@ This is because the variable \texttt{x} is first declared on line 3, before bein
 \subsection*{Dynamic Scoping}
 The result of executing the program with dynamic scoping is 20 because the variable \texttt{x} is set to 20 in \texttt{g()} and \texttt{g()} calls \texttt{f()}.
 
-%TODO:
+
 \section{Data Structures in Memory}
 \subsection{Arrays}
 An array is a type of data structure that holds a fixed number of elements of the same type.
 Arrays are usually stored in memory as a contiguous block of memory.
 Arrays are usually indexed by integers.
 
-Let's look at an example.\\
-
-\begin{figure*}[!h]
+\begin{figure*}[h]
     \begin{lstlisting}[language=c]
         int foo[5] = {1, 2, 3, 4, 5};
     \end{lstlisting}
     \caption{Array of Ints with 5 elements.}
 \end{figure*}
-In the code above we have an array consisting of 5 integers, addresses take up 1 byte of memory, and integers take up 4.
+In the code above we have an array consisting of 5 integers, we'll assume that addresses only use 1 byte of memory, and integers take up 4 bytes.
+Figure \ref{fig:array1} shows how the array would be stored in memory.
 
-\begin{figure}[!h]
+\begin{figure}[H]
     \centering
     \begin{bytefield}{8}
         \begin{rightwordgroup}{\texttt{foo} is a pointer to the array at \texttt{0x00}}
@@ -106,9 +103,10 @@ In the code above we have an array consisting of 5 integers, addresses take up 1
 \end{figure}
 
 
-The array is stored in memory as a contiguous block of memory, and the variable \texttt{foo} is a pointer to the first element in the array(Figure \ref{fig:array1}).
+The array is stored as a contiguous block of memory, and the variable \texttt{foo} is a pointer on the stack that points to the start of the array.
 To access the elements in the array we can use the pointer \texttt{foo} and add an offset to it.
 The address for the $n'th$ element in an array is given by the following formula, where
+
 \begin{equation*}
     \texttt{foo[n]} = \texttt{\&foo} + n * \texttt{sizeof(int)}
 \end{equation*}
@@ -121,12 +119,57 @@ The address for the $n'th$ element in an array is given by the following formula
 
 \subsection{Matrixes and Multidimensional Arrays}
 Things get a little bit more complicated when dealing with multidimensional arrays, and the exact nature of how multidimensional arrays are stored in memory depends on the language.
-\subsubsection{Java}
-\subsubsection{C++}
-\subsubsection{Fortran}
+There are two main ways of storing arrays of arrays.
+First is to that each entry in the outer array is a pointer to the nested array.
+This has a few problems,\\
+the first is that the cpu needs to do an extra memory lookup to get the address of the nested array.
+The second is that it becomes impossible for the compiler to make memory layout optimizations that would otherwise be possible.
+
+The second way is to store the entire array as a contiguous block of memory.
+This has the advantage that the cpu can do a single memory lookup to get the address of the nested array, and the compiler can make optimizations.
+The disadvantage is that the memory layout is not as intuitive(See Figure \ref{fig:array2}).
+\begin{figure}[!h]
+    \begin{minipage}{.3\textwidth}
+        \centering
+        \begin{lstlisting}[language = c]
+int bar[3][3] = [
+        [1, 2, 3],//First Row
+        [4, 5, 6],//Second Row
+        [7, 8, 9] //Third Row
+    ];
+        \end{lstlisting}
+    \end{minipage}%
+    \begin{minipage}{.3\textwidth}
+        \centering
+        \begin{bytefield}{8}
+            \memsection{0xfffff}{0x0020}{4}{\dots}\\
+            \begin{rightwordgroup}{Third row}
+                \memsection{}{0x20}{4}{9}\\
+                \memsection{}{0x1c}{4}{8}\\
+                \memsection{}{0x18}{4}{7}
+            \end{rightwordgroup}\\
+            \begin{rightwordgroup}{Second row}
+                \memsection{}{0x14}{4}{6}\\
+                \memsection{}{0x10}{4}{5}\\
+                \memsection{}{0x0c}{4}{4}
+            \end{rightwordgroup}\\
+            \begin{rightwordgroup}{First row}
+                \memsection{}{0x08}{4}{3}\\
+                \memsection{}{0x04}{4}{2}\\
+                \memsection{}{0x00}{4}{1}
+            \end{rightwordgroup}
+        \end{bytefield}
+    \end{minipage}
+    \caption{\texttt{bar} in memory with contiguous layout}
+    \label{fig:array2}
+\end{figure}
+
+\newpage
+
 \subsection{Records, Structs}
 Records are a data structure that can hold multiple values of different types.
 Records are also known as structs, tuples, or classes depending on the language.
+
 
 \begin{figure}[!h]
     \centering
@@ -158,7 +201,23 @@ struct foo {
     \caption{\texttt{foo} in memory}
     \label{fig:struct1}
 \end{figure}
+
+\newpage
+
 \subsubsection{Arrays of Records}
+Storing records in memory is very straight forwards, as with arrays, there are two main ways of storing arrays of records.
+The first is the one used by Java, where each element of the array is really a pointer to a record thats stored somewhere else on the heap.\\
 
+The other way is to store them as you would any other datatype, as a contiguous block of memory, with one record stored after the other.
 
-\textit{Speaking of procedures\dots}
+To access a field in a record we can use the following formula, where
+\begin{equation*}
+    \texttt{arr[n].x} = \texttt{\&arr} + n *|\texttt{foo}|+|\texttt{offset(x)}|
+\end{equation*}
+where 
+\begin{itemize}
+    \item \texttt{arr} is the Array
+    \item \texttt{n} is the index of the element we want to access
+    \item \texttt{foo} is the struct or record
+    \item \texttt{x} is the field we want to access
+\end{itemize}

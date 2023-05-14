@@ -49,6 +49,7 @@ Since the variable is stored at a different store location any change to the loc
 \gls{param} are the variables the procedure uses to communicate to the outside world. They are variables, but with one key difference;
 They also specify \textit{how} it communicates with the outside world, the parameters specify if the variable is an output variable(write), observed only(read), or updatable(is this a word?)(read and write).\\
 Another way of looking at parameters is that parameters are local variables that are initialized with the passed arguments at invocation time.
+
 \subsection{Performing a Procedure}
     When performing a function we can usually assume that the parameters have already been added to the environment and initialized and that except for those parameters we have a clean
     environment to work with.
@@ -64,8 +65,9 @@ Another way of looking at parameters is that parameters are local variables that
 \section{Executing a Procedure Call}
     We now know how to actually perform a procedure, but for us to even be able to perform a procedure in the first place we need to prepare the environment and program for it.
     There are two main ways of making the program ready to perform a procedure. These are dependent on what type of \gls{argument} passing we are doing.
+\newpage
 \section{Arg Passing}%Difference between args and params
-    Argument passing fall into one of two camps.
+    Argument passing falls into one of two camps.
     \subsection{Copy Semantics}
         The first is \gls{copy sem}. 
         In copy semantics, all the arguments are passed to the parameters by copying the value into them.

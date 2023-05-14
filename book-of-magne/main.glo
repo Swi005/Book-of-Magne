@@ -1,0 +1,36 @@
+\glossaryentry{"\textbf {Domain Specific Languages}?\glossentry{DSL}|setentrycounter[]{page}"\glsnumberformat}{6}
+\glossaryentry{"\textbf {Basic Typed Language}?\glossentry{BTL}|setentrycounter[]{page}"\glsnumberformat}{6}
+\glossaryentry{"\textbf {Basic Imperative Programing Language}?\glossentry{BIPL}|setentrycounter[]{page}"\glsnumberformat}{6}
+\glossaryentry{"\textbf {Procedural Imperative Programming Language}?\glossentry{PIPL}|setentrycounter[]{page}"\glsnumberformat}{6}
+\glossaryentry{"\textbf {General Purpose Languages}?\glossentry{GPL}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Syntax}?\glossentry{syntax}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Semantics}?\glossentry{semantics}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Meta-Programming}?\glossentry{meta-programming}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Meta-Language}?\glossentry{meta-language}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Object Language}?\glossentry{object-language}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Basic Typed Language}?\glossentry{BTL}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Basic Imperative Programing Language}?\glossentry{BIPL}|setentrycounter[]{page}"\glsnumberformat}{7}
+\glossaryentry{"\textbf {Sum of Products}?\glossentry{Sum of Products}|setentrycounter[]{page}"\glsnumberformat}{8}
+\glossaryentry{"\textbf {Interpreter}?\glossentry{interpreter}|setentrycounter[]{page}"\glsnumberformat}{10}
+\glossaryentry{"\textbf {Compiler}?\glossentry{compiler}|setentrycounter[]{page}"\glsnumberformat}{10}
+\glossaryentry{"\textbf {Lexical Analysis}?\glossentry{lexical analysis}|setentrycounter[]{page}"\glsnumberformat}{10}
+\glossaryentry{"\textbf {Syntax Analyzer}?\glossentry{syntax analyzer}|setentrycounter[]{page}"\glsnumberformat}{11}
+\glossaryentry{"\textbf {Abstract Syntax Tree}?\glossentry{AST}|setentrycounter[]{page}"\glsnumberformat}{11}
+\glossaryentry{"\textbf {Semantic Analyzer}?\glossentry{semantic analyzer}|setentrycounter[]{page}"\glsnumberformat}{11}
+\glossaryentry{"\textbf {Abstract Syntax Tree}?\glossentry{AST}|setentrycounter[]{page}"\glsnumberformat}{12}
+\glossaryentry{"\textbf {Expression}?\glossentry{expression}|setentrycounter[]{page}"\glsnumberformat}{13}
+\glossaryentry{"\textbf {Wellformed}?\glossentry{wellformed}|setentrycounter[]{page}"\glsnumberformat}{16}
+\glossaryentry{"\textbf {Store}?\glossentry{store}|setentrycounter[]{page}"\glsnumberformat}{17}
+\glossaryentry{"\textbf {Enviroment}?\glossentry{env}|setentrycounter[]{page}"\glsnumberformat}{17}
+\glossaryentry{"\textbf {Scope}?\glossentry{scope}|setentrycounter[]{page}"\glsnumberformat}{17}
+\glossaryentry{"\textbf {Local Variable}?\glossentry{local var}|setentrycounter[]{page}"\glsnumberformat}{25}
+\glossaryentry{"\textbf {Parameter}?\glossentry{param}|setentrycounter[]{page}"\glsnumberformat}{25}
+\glossaryentry{"\textbf {Stackframe}?\glossentry{stackframe}|setentrycounter[]{page}"\glsnumberformat}{25}
+\glossaryentry{"\textbf {Argument}?\glossentry{argument}|setentrycounter[]{page}"\glsnumberformat}{25}
+\glossaryentry{"\textbf {Copy Semantics}?\glossentry{copy sem}|setentrycounter[]{page}"\glsnumberformat}{26}
+\glossaryentry{"\textbf {Reference Semantics}?\glossentry{ref sem}|setentrycounter[]{page}"\glsnumberformat}{28}
+\glossaryentry{"\textbf {Signature}?\glossentry{signature}|setentrycounter[]{page}"\glsnumberformat}{30}
+\glossaryentry{"\textbf {Algebra}?\glossentry{algebra}|setentrycounter[]{page}"\glsnumberformat}{30}
+\glossaryentry{"\textbf {Abstract Data Type(ADT)}?\glossentry{adt}|setentrycounter[]{page}"\glsnumberformat}{33}
+\glossaryentry{"\textbf {Software Language Engineering}?\glossentry{SLE}|setentrycounter[]{page}"\glsnumberformat}{37}
+\glossaryentry{"\textbf {Backus-Naur Form}?\glossentry{BNF}|setentrycounter[]{page}"\glsnumberformat}{37}

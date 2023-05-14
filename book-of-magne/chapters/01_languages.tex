@@ -26,8 +26,9 @@
     A Domain-Specific Language is a programming language with a higher level of abstraction optimized for a specific class of problems. 
     Optimized for a certain problem/domain. 
     DSLs can be further subdivided into external DSL(separate programming languages), and internal DLS(language-like interface as a library.)\\
-
-    \newpage
+    The languages we have implemented can also be categorized as either a DSL or a GPL.\\
+    \Gls{BTL} and \gls{BIPL} are DSLs because they have small ASTs, specific domain(teaching languages), and are not user extendable \\
+    \Gls{PIPL} however can be categorized as a GPL because, while it shares the domain and purpose of BIPL and BTl it is user extendable, and this is enough to push it into the category of GPLs.\\
 
     \Gls{GPL} however are more general and can be used to solve many different problems in many different situations.
     These languages have a wide array
@@ -51,6 +52,8 @@
         \caption{Comparison between GPLs and DSLs}
     \end{figure*}%
 
+
+
     \subsection*{Syntax and Semantics}
     All programming languages have two parts; the \gls{syntax}, and the \gls{semantics}.\\
     Syntax is the study of \textit{structure}, just as semantics is the study of \textit{meaning}. 
@@ -58,10 +61,16 @@
 
     \section{Meta Programming}
     One of the harder things in the course is \gls{meta-programming}. INF222 is usually the first time you've encountered meta-programming and it can be hard a hard concept to grasp. 
-    Meta-programming is programming \textit{about} programming. More properly meta-programs treat other programs as data. When you see a data structure like \gls{BTL} or \gls{BIPL} in Haskell it
-    represents a program.
-    \comment{TODO:Talk about meta languages, Object languages, and classify BTL, BIPL, and PIPL as DSL or GPL}
+    Meta-programming is programming \textit{about} programming. More properly meta-programs treat other programs as data. 
+    Interpreters and compilers are one example of meta-programs.\\
+    When talking about a language in the context of a compiler it is often difficult to distinguish between the language itself and the language that the compile is written in.
+    We call the language that the compiler is written in the \gls{meta-language}, and the language that the compiler is compiling is the \gls{object-language}.\\
+    For example in the BTL interpreter, the object language is BTL, and the meta-language is Haskell.\\
+
+    When you see a data structure like \gls{BTL} or \gls{BIPL} in Haskell it represents a program.
+    \comment{TODO: Talk about meta languages, Object languages, and classify BTL, BIPL, and PIPL as DSL or GPL}
     
+
     \newpage
     \section{Sum of products}
         You may have encountered the term \gls{Sum of Products}, lets's quickly run over why we use the terms \textit{sum} and \textit{product} 
@@ -128,6 +137,6 @@ class B implements SomeType {
 class C implements SomeType {
 }
     \end{lstlisting}
-    Now, an object of type SomeType can (ignoring null) have $8 + 2 + 1$ different values,
+    Now, an object of type SomeType can (ignoring null) has $8 + 2 + 1$ different values,
     just like in the Haskell example above.
 

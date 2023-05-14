@@ -1,0 +1,21 @@
+\chapter{Assertions}
+Assertions are a statement that checks that some predicate holds.\\
+Assertions ensure that a program is always in a valid state.
+If for any reason an assertion fails a program crash is the result.
+This is usually the preferred option since an invalid state means that the program behaviour is undefined, and can result in security or safety issues.
+
+\section{Types of Assertions}
+\subsection*{Pre-Conditions}
+Pre-conditions are assertions that must hold before a function or procedure is called.
+They are used to ensure that the function is called with valid arguments and that the function can be executed correctly.
+
+\subsubsection*{Post-Conditions}
+Post-conditions are assertions that must hold after a function or procedure is called.
+They are used to ensure that the function has been executed correctly and that the result is valid.
+
+\subsection*{Invariants}
+Invariants are assertions that must hold at all times.
+They are used to ensure that the program is always in a valid state.
+
+For example, we can use assertions to make sure that an implementation of the natural numbers is valid.
+We could do this by always checking that any argument, value, or result is always greater than or equal to zero.

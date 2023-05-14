@@ -1,0 +1,51 @@
+\chapter{Language Standards}
+
+\section{Software Engineering Implications of Languages}
+The choice of language can have a massive impact on software development. The move to higher abstraction languages has caused a corresponding increase in efficiency
+since the developer can focus all their efforts on what the program should accomplish instead of having to work on the details. 
+\gls{SLE} has many applications within software engineering like;
+
+\begin{itemize}
+    \item Design, implementation, and usage of DSLs that are tailor-made for a specific problem or technical domains, like, UI, web services, configurations, testing,
+            data exchange, interoperability, deployment, and distribution.
+    \item Software reverse engineering and re-engineering in many forms, for example, analysis of projects regarding their dependence on open source software,
+            integration of systems, and migration of systems constrained by legislation or technology.
+    \item Data extraction in the context of data mining, information retrieval, machine learning, big data analytics, social science, digital forensics, and AI, 
+            with diverse input, and artifacts to be parsed in interchange formats to conform to.
+\end{itemize}
+
+Software languages can also impact the security of any product. If a language has a fundamental flaw or creates unknown pitfalls that might be hard to spot due to
+the inherent design of the language could then be exploited by malicious actors. 
+
+\section{Reading spesifications}
+\subsection{Backus-Naur Form}
+    \gls{BNF} is a format for describing context-free grammar. We use it to describe the syntax of languages. Although it is probably not part of the curriculum
+    it's still important to know since most language specification describes their languages using some variation of BNF most common of which is the Extended Backus-Naur form(EBNF).
+    An EBNF consists of terminal symbols and non-terminal production rules which are the restrictions governing how terminal symbols can be combined into a legal sequence. 
+    Examples of terminal symbols include alphanumeric characters, punctuation marks, and whitespace characters. These constructions often end up looking like Haskell data structures,
+    this should hopefully help you understand them.
+    \begin{lstlisting}[language=XML]
+<symbol> ::= __expression__
+    \end{lstlisting}
+    Here is the complete PASCAL-like language that only allows assignments. in its EBNF form.
+    \begin{lstlisting}[language=XML]
+(* a simple program syntax in EBNF - Wikipedia *)
+program = 'PROGRAM', white space, identifier, white space, 
+    'BEGIN', white space, 
+    { assignment, ";", white space }, 
+    'END.' ;
+identifier = alphabetic character, { alphabetic character | digit } ;
+number = [ "-" ], digit, { digit } ;
+string = '"' , { all characters - '"' }, '"' ;
+assignment = identifier , ":=" , ( number | identifier | string ) ;
+alphabetic character = "A" | "B" | "C" | "D" | "E" | "F" | "G"
+                | "H" | "I" | "J" | "K" | "L" | "M" | "N"
+                | "O" | "P" | "Q" | "R" | "S" | "T" | "U"
+                | "V" | "W" | "X" | "Y" | "Z" ;
+digit = "0" | "1" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" ;
+white space = ? white space characters ? ;
+all characters = ? all visible characters ? ;
+    \end{lstlisting}
+
+    EBNF also includes regex like syntax for expressing repetition(*,+), optionality(?,[]), and alternatives(|).
+    If the above looks confusing or unintuitive I wouldn't worry. The syntax of EBNF is fairly intuitive and most standards have fairly little of it at once.
