@@ -86,18 +86,23 @@
     \fancyhead{}
     \rhead{\rightmark}
     \lhead{\leftmark}
-    \fancyfoot{}
-    \fancyfoot[LO,RE]{\thepage}
+    %\fancyfoot{}
     
     %Frontpage 
     \include{chapters/frontpage.tex}
     \newpage
+    \thispagestyle{empty} 
+    
+    %\fancyfoot{}
+    %\fancyfoot[LO,RE]{\thepage}
 
     \frontmatter
+    \addcontentsline{toc}{chapter}{Table of Contents}
     \tableofcontents
     \newpage
     
     \mainmatter
+    \addcontentsline{toc}{chapter}{Preface}
     \include{chapters/00_preface.tex}
     \newpage
     
