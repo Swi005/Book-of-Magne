@@ -42,6 +42,24 @@
   tabsize=3
 }
 
+
+\fancypagestyle{IHA-fancy-style}{%
+  \pagestyle{fancy}
+  \fancyhead{}
+  \rhead{\rightmark}
+  \lhead{\leftmark}
+  \fancyfoot{}
+  \fancyfoot[LO,RE]{\thepage}
+}
+
+% Redefine the plain page style
+\fancypagestyle{plain}{%
+  \pagestyle{fancy}
+  \fancyhead{}
+  \fancyfoot{}
+  \fancyfoot[LO,RE]{\thepage}
+}
+
 \bibliographystyle{plain}
 
 \makeatletter
@@ -82,17 +100,13 @@
 %
 \begin{document}
 
-    \pagestyle{fancy}
-    \fancyhead{}
-    \rhead{\rightmark}
-    \lhead{\leftmark}
-    %\fancyfoot{}
     
     %Frontpage 
     \include{chapters/frontpage.tex}
+    \pagestyle{IHA-fancy-style}
     \newpage
     \thispagestyle{empty} 
-    
+
     %\fancyfoot{}
     %\fancyfoot[LO,RE]{\thepage}
 
