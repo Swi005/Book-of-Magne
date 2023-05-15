@@ -10,8 +10,6 @@ begin
 
     procedure main ()
     begin
-        var a = 4;
-        var b = 5;
         call tmp(4,5);
     end
 end

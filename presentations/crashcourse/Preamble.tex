@@ -1,4 +1,4 @@
-\documentclass[aspectratio=169,fleqn,xcolor={dvipsnames}]{beamer}
+\documentclass[aspectratio=169,tikz, fleqn,xcolor={dvipsnames}]{beamer}
 %Template by Lukas
 
 \usetheme[pageofpages=of,titlepagelogo=UiBlogoMN_gray_m_Eng]{hubln}
@@ -17,10 +17,12 @@
 \usepackage{glossaries}
 \usepackage{fancyhdr}
 \usepackage{cleveref}
-\usepackage{epigraph}
+\usepackage{adjustbox}
 \usepackage{tikz}
 \usepackage{bytefield}
 %\definecolor{bg}{HTML}{282828}
+\usetikzlibrary{arrows, arrows.meta, backgrounds, shapes, automata, petri, positioning, calc, chains, decorations.pathmorphing, fit, decorations.pathreplacing}
+
 
 \definecolor{bg}{RGB}{40, 40, 40}
 \setbeamercovered{invisible}
@@ -71,6 +73,28 @@
   \hfill\break
 }
 
+\newcommand{\alg}[2]{[\![#1]\!]_{#2}}
+
+\newcommand{\descbox}[2]{\parbox[c][3.8\baselineskip]{0.95\width}{%
+    % facilitates the creation of memory maps. Start address at the bottom,
+    % end address at the top.
+    % syntax:
+    % \memsection{end address}{start address}{height in lines}{text in box}
+}}
+\newcommand{\memsection}[4]{%
+  % define the height of the memsection
+  \bytefieldsetup{bitheight=#3\baselineskip}%
+  \bitbox[]{10}{%
+    \texttt{#1}% print end address
+    \\
+    % do some spacing
+    \vspace{#3\baselineskip}
+    \vspace{-2\baselineskip}
+    \vspace{-#3pt}
+    \texttt{#2}% print start address
+  }%
+  \bitbox{16}{#4}% print box with caption
+}
 %\newcommand{\comment}[1]{}
 \tikzset{vertex/.style={draw, circle, inner sep=1mm}}
 \newcommand{\incomplete}[3][1.5cm]{\begin{tikzpicture}

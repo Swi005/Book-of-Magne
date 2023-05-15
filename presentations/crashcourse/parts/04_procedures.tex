@@ -1,50 +1,62 @@
 
 \subsection*{What is a Procedure}
-\begin{frame}{What is a Procedure}
+\begin{frame}{\textbf{What is a Procedure}}
     \begin{itemize}
         \item Procedures are "programs within programs"
         \item Procedures have their own environment
-        \item Functions $\neq$ Procedures
     \end{itemize}
+    \begin{alertblock}{Functions vs. Procedures}
+        \begin{equation}
+            \text{Functions} \neq \text{Procedures}
+        \end{equation}
+        Functions are expressions, procedures are statements.\\
+        Very often same implementation.
+    \end{alertblock}
 \end{frame}
 
 \subsection*{Anatomy of a procedure}
-\begin{frame}{Anatomy of a Procedure}
+\begin{frame}{\textbf{Anatomy of a Procedure}}
     \begin{figure}
         \lstinputlisting[language=Pascal]{examples/anatomy.pipl}
-        \label{fig:anatomy}
-        \caption{Procedure structure}
     \end{figure}
+    \begin{block}{Params}
+        \begin{itemize}
+            \item \textbf{OBS} - "read only"
+            \item \textbf{UPD} - "read/write"
+            \item \textbf{OUT} - "write only"
+        \end{itemize}
+    \end{block}
 \end{frame}
 
-
-\begin{frame}{Declaration vs. Calling}
+\begin{frame}{\textbf{Declaration vs. Calling}}
     \begin{figure}
-        \lstinputlisting[language=pascal]{examples/ex1.pipl}
+        \lstinputlisting[language=pascal, basicstyle=\ttfamily\tiny]{examples/ex1.pipl}
         \label{fig:ex1}
         \caption{Swap Procedure}
     \end{figure}
 \end{frame}
 
-\subsection*{Procedure Parameters}
-\begin{frame}{Parameter Semantics}
+\subsection*{Paramter Semantics}
+\begin{frame}{\textbf{Parameter Semantics}}
+    \Large
+    Two types of parameter semantics:
     \begin{itemize}
-        \item \textbf{OBS} - "read only"
-        \item \textbf{UPD} - "read/write"
-        \item \textbf{OUT} - "write only"
+        \item Reference semantics
+        \item Copy semantics
     \end{itemize}
 \end{frame}
 
-\subsection*{Parameter Semantics}
-\begin{frame}{Reference Semantics}
+\begin{frame}{\textbf{Reference Semantics}}
+    \Large
     \begin{itemize}
         \item Parameters become aliased to arguments 
         \item Points to same memory address
         \item Unsafe, but sometimes useful
     \end{itemize}
 \end{frame}
-\begin{frame}{Running a procedure with reference semantics}
-    \begin{enumerate}
+\begin{frame}{\textbf{Running a procedure with reference semantics}}
+    \Large
+    \begin{enumerate}[<+->]
         \item Get stackframe
         \item Wipe environment
         \item Add parameters to the environment with same address as arg
@@ -52,7 +64,8 @@
         \item restore the environment
     \end{enumerate}
 \end{frame}
-\begin{frame}{Copy Semantics}
+\begin{frame}{\textbf{Copy Semantics}}
+    \Large
     \begin{itemize}
         \item Parameters are declared as variables and initialized with args' value
         \item Safer
@@ -61,8 +74,9 @@
     \end{itemize}
 \end{frame}
 
-\begin{frame}{Running a procedure with copy semantics}
-    \begin{enumerate}
+\begin{frame}{\textbf{Running a procedure with copy semantics}}
+    
+    \begin{enumerate}[<+->]
         \item Get stackframe
         \item Get values of args
         \item Wipe environment
@@ -76,38 +90,46 @@
 \end{frame}
 
 
-\subsubsection*{Example!}
-\begin{frame}{Swap example v2}
+\subsection*{Example!}
+\begin{frame}{\textbf{Swap example v2}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/paramsem.pipl}
 \end{frame}
 
-\subsubsection*{Reference semantics!}
-\begin{frame}{Reference semantics}
+\subsection*{Reference semantics!}
+\begin{frame}\textbf{{Reference semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem.pipl}
 \end{frame}
 
-\begin{frame}{Reference semantics}
+\begin{frame}\textbf{{Reference semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem1.pipl}
 \end{frame}
-\begin{frame}{Reference semantics}
+\begin{frame}\textbf{{Reference semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem2.pipl}
 \end{frame}
-\begin{frame}{Reference semantics}
+\begin{frame}\textbf{{Reference semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem3.pipl}
 \end{frame}
 
 
-\subsubsection*{Copy semantics!}
-\begin{frame}{Copy semantics}
+\subsection*{Copy semantics!}
+\begin{frame}\textbf{{Copy semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem.pipl}
 \end{frame}
-\begin{frame}{Copy semantics}
+\begin{frame}\textbf{{Copy semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem1.pipl}
 \end{frame}
-\begin{frame}{Copy semantics}
+\begin{frame}\textbf{{Copy semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem2.pipl}
 \end{frame}
-\begin{frame}{Copy semantics}
+\begin{frame}\textbf{{Copy semantics}}
     \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem3.pipl}
 \end{frame}
+
 %\section*{Slutt}
+\subsection*{Q\&A}
+\begin{frame}{Questions?}
+    \begin{figure}
+        \centering
+        \includegraphics[height = 4.9cm]{guillaume5.jpg}
+    \end{figure}
+\end{frame}
