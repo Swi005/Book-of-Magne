@@ -1,0 +1,44 @@
+
+--Program
+program = "Program" identifier "begin" (procedure_decl)* "end";
+
+--Procedures
+procedure_header = "procedure" identifier "(" (param)* ")";
+procedure_decl = procedure_header "begin" stmt "end";
+
+param = ("upd"|"obs"|"out") identifier ":" type;
+proc_call = "call" identifier "("(arg)* ")";
+arg = (expr);
+
+--Comments
+line_comment = "//" String;
+multiline_comment = "{*" String "*}";
+
+--Statements
+stmt = (sequence | var_decl | var_init | var_assign | if_stmt |while)";";
+sequence = (stmt)*;
+var_decl = "var" identifier ":" type;
+var_init = "var" identifier ":=" expr;
+var_assign = identifier ":=" expr;
+if_stmt = "if" expr "then" stmt "else" stmt;
+while_stmt = "while" expr "begin" stmt "end";
+
+--Expressions
+expr = "("expr")" | (literal|);
+literal = bool_lit | int_lit;
+plus = expr "+" expr;
+mult = expr "*" expr;
+minus = expr "-" expr;
+and = expr ("and"|"AND"| "==") expr;
+or = expr ("or" | "OR" | "") expr;
+not =  ("!" | "not" | "NOT") expr;
+le = expr "<" expr;
+choice = expr "?" expr ":" expr;  --terniary operator https://learn.microsoft.com/en-us/dotnet/csharp/language-reference/operators/conditional-operator
+var = identifier;
+
+--literals
+identifier = REGEX(\w);--identifier is any 
+type = "integer" | "boolean";
+bool_lit = "True" | "False"
+int_lit = ("-")? REGEX([0-9]+)
+String = REGEX([\wA-Za-z]*) --Match words(\w) 

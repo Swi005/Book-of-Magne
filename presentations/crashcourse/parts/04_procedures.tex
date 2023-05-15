@@ -1,0 +1,113 @@
+
+\subsection*{What is a Procedure}
+\begin{frame}{What is a Procedure}
+    \begin{itemize}
+        \item Procedures are "programs within programs"
+        \item Procedures have their own environment
+        \item Functions $\neq$ Procedures
+    \end{itemize}
+\end{frame}
+
+\subsection*{Anatomy of a procedure}
+\begin{frame}{Anatomy of a Procedure}
+    \begin{figure}
+        \lstinputlisting[language=Pascal]{examples/anatomy.pipl}
+        \label{fig:anatomy}
+        \caption{Procedure structure}
+    \end{figure}
+\end{frame}
+
+
+\begin{frame}{Declaration vs. Calling}
+    \begin{figure}
+        \lstinputlisting[language=pascal]{examples/ex1.pipl}
+        \label{fig:ex1}
+        \caption{Swap Procedure}
+    \end{figure}
+\end{frame}
+
+\subsection*{Procedure Parameters}
+\begin{frame}{Parameter Semantics}
+    \begin{itemize}
+        \item \textbf{OBS} - "read only"
+        \item \textbf{UPD} - "read/write"
+        \item \textbf{OUT} - "write only"
+    \end{itemize}
+\end{frame}
+
+\subsection*{Parameter Semantics}
+\begin{frame}{Reference Semantics}
+    \begin{itemize}
+        \item Parameters become aliased to arguments 
+        \item Points to same memory address
+        \item Unsafe, but sometimes useful
+    \end{itemize}
+\end{frame}
+\begin{frame}{Running a procedure with reference semantics}
+    \begin{enumerate}
+        \item Get stackframe
+        \item Wipe environment
+        \item Add parameters to the environment with same address as arg
+        \item run the procedure code
+        \item restore the environment
+    \end{enumerate}
+\end{frame}
+\begin{frame}{Copy Semantics}
+    \begin{itemize}
+        \item Parameters are declared as variables and initialized with args' value
+        \item Safer
+        \item More intuitive behavior
+        \item More complicated to implement
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{Running a procedure with copy semantics}
+    \begin{enumerate}
+        \item Get stackframe
+        \item Get values of args
+        \item Wipe environment
+        \item Add parameters to environment
+        \item init those parameters with the arg values
+        \item run the procedure code
+        \item get the values of the parameters
+        \item restore the environment
+        \item copy the parameter values back to the args
+    \end{enumerate}
+\end{frame}
+
+
+\subsubsection*{Example!}
+\begin{frame}{Swap example v2}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/paramsem.pipl}
+\end{frame}
+
+\subsubsection*{Reference semantics!}
+\begin{frame}{Reference semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem.pipl}
+\end{frame}
+
+\begin{frame}{Reference semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem1.pipl}
+\end{frame}
+\begin{frame}{Reference semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem2.pipl}
+\end{frame}
+\begin{frame}{Reference semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/reference/paramsem3.pipl}
+\end{frame}
+
+
+\subsubsection*{Copy semantics!}
+\begin{frame}{Copy semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem.pipl}
+\end{frame}
+\begin{frame}{Copy semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem1.pipl}
+\end{frame}
+\begin{frame}{Copy semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem2.pipl}
+\end{frame}
+\begin{frame}{Copy semantics}
+    \lstinputlisting[language=Pascal]{examples/paramater semantics/copy/paramsem3.pipl}
+\end{frame}
+%\section*{Slutt}
