@@ -42,7 +42,7 @@ exec fmod env (SetVar x e) = case lookup x env of
 exec fmod env (AssertEq e1 e2) = if eval fmod env e1 == eval fmod env e2 
                                     then env
                                 else error "Assertion failed"
-
+exec fmod env (Assert e1) = if eval fmod env e1 then env else error "Assertion failed" 
 
 -- | Checks that a signature is well-formed
 checkSignature :: Signature -> Bool
